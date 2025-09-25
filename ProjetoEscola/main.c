@@ -1,3 +1,5 @@
+// Prjeto escola criado para a matéria Laboratório de programação INF029 do curso de ADS sob tutoria do professor Renato Novaes; Pariticipantes: José Amando Marques, Lorena Duarte e Lucas Costa
+
 #include "functions.h"
 
 int main()
