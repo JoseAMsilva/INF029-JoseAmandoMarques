@@ -23,10 +23,12 @@
 typedef struct Pessoa
 {
     int matricula;
-    char nome[20];
+    char nome[40];
     char sexo;
+    int idade;
     char cpf[15];
     char funcao;//A- Aluno, P- Professor
+    char situacao; //A- Ativo, I- Inativo
     struct data
     {
         int dia;
@@ -67,6 +69,9 @@ int menuAluno();//Função do menu aluno
 void menuProfessor();//Função do menu professor
 void menuDisciplina();//Função do menu disciplina
 int cadastrarAluno(pessoa *aluno);//Função para cadastrar aluno
+void listarAlunos();//Função para listar alunos
+void alterarAluno();//Função para alterar aluno
+void excluirAluno();//Função para excluir aluno
 void cadastrarNome(pessoa *entrada);//Função para cadastrar o nome
 int validarNome(char nome[]);//Função para validar o nome
 void cadastrarSexo(pessoa *entrada);//Função para cadastrar o sexo
@@ -81,7 +86,7 @@ void flush_in();//Função para limpar o buffer do teclado
 int menuPrincipal()
 {
     int escolhaMain;
-    printf("ESCOLHA UMA OPCAO:\n1- Alunos\n2- Professores\n3- Disciplinas\n4- Sair\n>>");
+    printf("MENU PRINCIPAL:\n1- Alunos\n2- Professores\n3- Disciplinas\n4- Sair\n>>");
     scanf("%d", &escolhaMain);
     flush_in();
     if (escolhaMain >= 1 && escolhaMain <= 4)
@@ -102,7 +107,7 @@ int menuAluno()
     int voltar = false;
     while (!voltar)
     {
-        printf("ESCOLHA UMA OPCAO:\n1- Cadastrar\n2- Listar\n3- Alterar\n4- Excluir\n5- Voltar\n>>");
+        printf("MENU ALUNOS:\n1- Cadastrar\n2- Listar\n3- Alterar\n4- Excluir\n5- Voltar\n>>");
         scanf("%d", &escolhaAluno);
         flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
 
@@ -123,17 +128,17 @@ int menuAluno()
                 }
                 case 2:
                 {
-                    printf("Listar\n");
+                    listarAlunos();
                     break;
                 }
                 case 3:
                 {
-                    printf("Alterar\n");
+                    alterarAluno();
                     break;
                 }
                 case 4:
                 {
-                    printf("Excluir\n");
+                    excluirAluno();
                     break;
                 }
                 case 5:
@@ -173,9 +178,183 @@ int cadastrarAluno(pessoa *novoAluno)
     cadastrarCPF(novoAluno);
     cadastrarData(novoAluno);
     cadastraMatricula(novoAluno);
+    novoAluno->situacao = 'A';//Define a situação como ativa
     alunos[numAlunos] = *novoAluno;//Adiciona o novo aluno ao vetor de alunos
+
     numAlunos++;//Incrementa o número de alunos cadastrados
     return true;
+}
+//
+//Função para listar alunos
+//
+void listarAlunos()
+{
+    if (numAlunos == 0)
+    {
+        printf("Nenhum aluno cadastrado.\n");
+        return;
+    }
+
+    printf("Lista de Alunos Cadastrados:\n");
+    for (int i = 0; i < numAlunos; i++)
+    {
+        printf("Matricula: %d\n", alunos[i].matricula);
+        printf("Nome: %s\n", alunos[i].nome);
+        printf("Sexo: %c\n", alunos[i].sexo);
+        printf("CPF: %s\n", alunos[i].cpf);
+        printf("Data de Nascimento: %02d/%02d/%04d\n", alunos[i].dataNasc.dia, alunos[i].dataNasc.mes, alunos[i].dataNasc.ano);
+        printf("Idade: %d\n", alunos[i].idade);
+        printf("\n");
+    }
+}
+//
+//Função para alterar aluno
+//
+void alterarAluno()
+{
+    if (numAlunos == 0)
+    {
+        printf("Erro---Nenhum aluno cadastrado.\n");
+        return;
+    }
+
+    int matricula;
+    int encontrado = false;
+    int escolha;
+    printf("Digite a matricula do aluno a ser alterado\n>>");
+    scanf("%d", &matricula);
+    flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
+    if (numAlunos == 0)
+    {
+        printf("Erro---Nenhum aluno cadastrado.\n");
+        return;
+    }
+    for (int i = 0; i < numAlunos; i++)
+    {
+        if (alunos[i].matricula == matricula)
+        {
+            encontrado = true;
+            while (escolha != 5)
+            {
+                printf("Informe qual dado quer alterar:\n1- Nome\n2- Sexo\n3- CPF\n4- Data de Nascimento\n5- Cancelar\n>>");
+                scanf("%d", &escolha);
+                flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
+                switch (escolha)
+                {
+                    case 1:
+                    {
+                        cadastrarNome(&alunos[i]);
+                        break;
+                    }
+                    case 2:
+                    {
+                        cadastrarSexo(&alunos[i]);
+                        break;
+                    }
+                    case 3:
+                    {
+                        cadastrarCPF(&alunos[i]);
+                        break;
+                    }
+                    case 4:
+                    {
+                        cadastrarData(&alunos[i]);
+                        break;
+                    }
+                    case 5:
+                    {
+                        printf("Alteracao cancelada\n");
+                        return;
+                    }
+                    default:
+                    {
+                        printf("Erro---Opcao invalida\n");
+                        return;
+                    }
+                }
+                printf("Aluno com matricula %d alterado com sucesso\n", matricula);
+            }
+            printf("Aluno encontrado. Informe qual dado quer alterar:\n1- Nome\n2- Sexo\n3- CPF\n4- Data de Nascimento\n5- Cancelar\n>>");
+            scanf("%d", &escolha);
+            flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
+            switch (escolha)
+            {
+                case 1:
+                {
+                    cadastrarNome(&alunos[i]);
+                    break;
+                }
+                case 2:
+                {
+                    cadastrarSexo(&alunos[i]);
+                    break;
+                }
+                case 3:
+                {
+                    cadastrarCPF(&alunos[i]);
+                    break;
+                }
+                case 4:
+                {
+                    cadastrarData(&alunos[i]);
+                    break;
+                }
+                case 5:
+                {
+                    printf("Alteracao cancelada\n");
+                    return;
+                }
+                default:
+                {
+                    printf("Erro---Opcao invalida\n");
+                    return;
+                }
+            }
+            printf("Aluno com matricula %d alterado com sucesso\n", matricula);
+            break;
+        }
+    }
+    if (!encontrado)
+    {
+        printf("Erro---Aluno com matricula %d nao encontrado\n", matricula);
+    }
+}
+//
+//Função para excluir aluno
+//
+void excluirAluno()
+{
+    if (numAlunos == 0)
+    {
+        printf("Erro---Nenhum aluno cadastrado.\n");
+        return;
+    }
+
+    int matricula;
+    int encontrado = false;
+    printf("Digite a matricula do aluno a ser excluido\n>>");
+    scanf("%d", &matricula);
+    flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
+
+    for (int i = 0; i < numAlunos; i++)
+    {
+        if (alunos[i].matricula == matricula)
+        {
+            encontrado = true;
+            //Move todos os alunos após o aluno a ser excluído uma posição para trás
+            for (int j = i; j < numAlunos - 1; j++)
+            {
+                alunos[j] = alunos[j + 1];
+            }
+            numAlunos--;//Decrementa o número de alunos cadastrados
+            printf("Aluno com matricula %d excluido com sucesso\n", matricula);
+            break;
+        }
+    }
+    if (!encontrado)
+    {
+        printf("Erro---Aluno com matricula %d nao encontrado\n", matricula);
+    }
 }
 //
 //Função para cadastrar o nome
@@ -202,6 +381,8 @@ void cadastrarNome(pessoa *entrada)
         
         while (nome[i] != '\0')
         {
+            nome[i] = tolower(nome[i]);//Converte todo o nome para minúsculo
+
             if (i == 0 || nome[i - 1] == ' ')
             {
                 nome[i] = toupper(nome[i]);
@@ -280,6 +461,8 @@ void cadastrarCPF(pessoa *entrada)
 {
     char cpf[15];
     int valido = false;
+    int retorno = false;
+    int cadastrado = false;
     int i, cont;
     i = cont = 0;
 
@@ -290,28 +473,55 @@ void cadastrarCPF(pessoa *entrada)
         fgets(cpf, 15, stdin);
         fflush(stdin);
         cpf[strcspn(cpf, "\n")] = '\0';//Remove o '\n' do final da string, se houver
-        valido = validarCPF(cpf);//Chama a função para validar o CPF retornando true ou false
-    }
+        retorno = validarCPF(&cpf);//Chama a função para validar o CPF retornando true ou false
 
-    while(cpf[i] != '\0')
-    {
-        if (cpf[i] == '.' || cpf[i] == '-')
+        if (retorno)
         {
-            cont++;
+            while(cpf[i] != '\0')
+        {
+            if (cpf[i] == '.' || cpf[i] == '-')
+            {
+                cont++;
+            }
+            i++;
         }
-        i++;
+        if (cont == 0)
+        {
+            sprintf(cpf, "%c%c%c.%c%c%c.%c%c%c-%c%c",
+            cpf[0], cpf[1], cpf[2],
+            cpf[3], cpf[4], cpf[5],
+            cpf[6], cpf[7], cpf[8],
+            cpf[9], cpf[10]);
+            
+        }
+        if (numAlunos > 0)
+            {
+                for (int j = 0; j < numAlunos; j++)
+                {
+                    if (strcmp(cpf, alunos[j].cpf) == 0)
+                    {
+                        printf("Erro---CPF ja cadastrado\n");
+                        cadastrado = true;
+                        break;
+                    }
+                }
+            }
+            if (cadastrado)
+            {
+                valido = false;
+                cadastrado = false;
+                continue;
+            }
+            else
+            {
+                valido = true;
+            }   
+        }
     }
-
-    if (cont == 0)
-    {
-        sprintf(cpf, "%c%c%c.%c%c%c.%c%c%c-%c%c",
-        cpf[0], cpf[1], cpf[2],
-        cpf[3], cpf[4], cpf[5],
-        cpf[6], cpf[7], cpf[8],
-        cpf[9], cpf[10]);
-    }
+    //Formata o CPF para o padrão xxx.xxx.xxx-xx se não estiver nesse formato
+    
     strcpy(entrada->cpf, cpf);//Copia o CPF validado para a estrutura
-    printf("O CPF %s foi cadastrado com sucesso\n", entrada->cpf);//Teste
+    printf("O CPF %s foi cadastrado com sucesso\n", entrada->cpf);//Teste para ver se o CPF foi cadastrado corretamente
 }
 //
 //Função para validar CPF
@@ -324,6 +534,7 @@ int validarCPF(char cpf[])
     int contaHifen = 0;
     char dig1, dig2, dig3, dig4, dig5, dig6, dig7, dig8, dig9, dig10, dig11;
     int i = 0;
+
 
     while (cpf[i] != '\0')
     {
@@ -403,10 +614,87 @@ int validarCPF(char cpf[])
 //
 void cadastrarData(pessoa *entrada)
 {
-    printf("Cadastrando data...\n");
-    //
-    //Implementar função para cadastrar data
-    //
+    int dia, mes, ano, idade;
+    int valido = false;
+
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    int anoAtual = tm.tm_year + 1900;//Ano atual
+
+    while (!valido)
+    {
+        printf("Digite a data de nascimento (DD MM AAAA)\n>>");
+        scanf("%d %d %d", &dia, &mes, &ano);
+        flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
+
+        //verifca se alguma data esta vazia
+        if (dia == 0 || mes == 0 || ano == 0)
+            {
+                printf("Erro---Data invalida\n");
+                continue;
+            }
+
+        if (ano < 1900 || ano > anoAtual)
+        {
+            printf("Erro---Ano invalido\n");
+            continue;
+        }
+        if (mes < 1 || mes > 12)
+        {
+            printf("Erro---Mes invalido\n");
+            continue;
+        }
+        if (dia < 1 || dia > 31)
+        {
+            printf("Erro---Dia invalido\n");
+            continue;
+        }
+        //Verifica se o dia é válido para o mês
+        if (mes == 2)
+        {
+            //Verifica se é ano bissexto
+            if ((ano % 4 == 0 && ano % 100 != 0) || (ano % 400 == 0))
+            {
+                if (dia > 29)
+                {
+                    printf("Erro---Dia invalido para fevereiro em ano bissexto\n");
+                    continue;
+                }
+            }
+            else
+            {
+                if (dia > 28)
+                {
+                    printf("Erro---Dia invalido para fevereiro em ano nao bissexto\n");
+                    continue;
+                }
+            }
+        }
+        else if (mes == 4 || mes == 6 || mes == 9 || mes == 11)
+        {
+            if (dia > 30)
+            {
+                printf("Erro---Dia invalido para o mes %d\n", mes);
+                continue;
+            }
+        }
+
+        valido = true;//Se chegou aqui, a data é válida
+    }
+
+    //Calcula a idade
+    idade = anoAtual - ano;
+    //Se o mês atual é menor que o mês de nascimento, ou se é o mesmo mês e o dia atual é menor que o dia de nascimento, subtrai 1 da idade
+    if (mes > (tm.tm_mon + 1) || (mes == (tm.tm_mon + 1) && dia > tm.tm_mday))
+    {
+        idade--;
+    }
+    entrada->dataNasc.dia = dia;
+    entrada->dataNasc.mes = mes;
+    entrada->dataNasc.ano = ano;
+    entrada->idade = idade;
+
+    printf("Data de nascimento %02d/%02d/%04d e idade %d cadastrada com sucesso\n", entrada->dataNasc.dia, entrada->dataNasc.mes, entrada->dataNasc.ano, entrada->idade);//Teste para ver se a data foi cadastrada corretamente
 }
 //
 //Função para cadastrar matrícula
