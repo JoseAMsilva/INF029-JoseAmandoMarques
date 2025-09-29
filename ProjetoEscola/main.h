@@ -54,7 +54,7 @@ typedef struct Disciplina
 //
 //Variáveis globais
 //
-int matriculaGlobal = 1;//Variável global para gerar matrículas únicas
+int matriculaGlobal = 0;//Variável global para gerar matrículas únicas
 int numDisciplinas = 0;//Número de disciplinas cadastradas
 disciplina disciplinas[20];//Vetor para armazenar até 20 disciplinas
 pessoa alunos[100];//Vetor para armazenar até 100 alunos
@@ -70,8 +70,8 @@ void menuProfessor();//Função do menu professor
 void menuDisciplina();//Função do menu disciplina
 int cadastrarAluno(pessoa *aluno);//Função para cadastrar aluno
 void listarAlunos();//Função para listar alunos
-void alterarAluno();//Função para alterar aluno
-void excluirAluno();//Função para excluir aluno
+void alterarPessoa(pessoa *entrada);//Função para alterar aluno
+void excluirPessoa(pessoa *entrada);//Função para excluir aluno
 void cadastrarNome(pessoa *entrada);//Função para cadastrar o nome
 int validarNome(char nome[]);//Função para validar o nome
 void cadastrarSexo(pessoa *entrada);//Função para cadastrar o sexo
@@ -133,12 +133,12 @@ int menuAluno()
                 }
                 case 3:
                 {
-                    alterarAluno();
+                    alterarPessoa(&aluno);
                     break;
                 }
                 case 4:
                 {
-                    excluirAluno();
+                    excluirPessoa(&aluno);
                     break;
                 }
                 case 5:
@@ -210,33 +210,74 @@ void listarAlunos()
 //
 //Função para alterar aluno
 //
-void alterarAluno()
+void alterarPessoa(pessoa *entrada)
 {
-    if (numAlunos == 0)
+    if (entrada->funcao == 'A')
     {
-        printf("Erro---Nenhum aluno cadastrado.\n");
-        return;
-    }
-
-    int matricula;
-    int encontrado = false;
-    int escolha;
-    printf("Digite a matricula do aluno a ser alterado\n>>");
-    scanf("%d", &matricula);
-    flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
-    if (numAlunos == 0)
-    {
-        printf("Erro---Nenhum aluno cadastrado.\n");
-        return;
-    }
-    for (int i = 0; i < numAlunos; i++)
-    {
-        if (alunos[i].matricula == matricula)
+    
+        if (numAlunos == 0)
         {
-            encontrado = true;
-            while (escolha != 5)
+            printf("Erro---Nenhum aluno cadastrado.\n");
+            return;
+        }
+
+        int matricula;
+        int encontrado = false;
+        int escolha;
+        printf("Digite a matricula do aluno a ser alterado\n>>");
+        scanf("%d", &matricula);
+        flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
+        if (numAlunos == 0)
+        {
+            printf("Erro---Nenhum aluno cadastrado.\n");
+            return;
+        }
+        for (int i = 0; i < numAlunos; i++)
+        {
+            if (alunos[i].matricula == matricula)
             {
-                printf("Informe qual dado quer alterar:\n1- Nome\n2- Sexo\n3- CPF\n4- Data de Nascimento\n5- Cancelar\n>>");
+                encontrado = true;
+                while (escolha != 5)
+                {
+                    printf("Informe qual dado quer alterar:\n1- Nome\n2- Sexo\n3- CPF\n4- Data de Nascimento\n5- Cancelar\n>>");
+                    scanf("%d", &escolha);
+                    flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
+                    switch (escolha)
+                    {
+                        case 1:
+                        {
+                            cadastrarNome(&alunos[i]);
+                            break;
+                        }
+                        case 2:
+                        {
+                            cadastrarSexo(&alunos[i]);
+                            break;
+                        }
+                        case 3:
+                        {
+                            cadastrarCPF(&alunos[i]);
+                            break;
+                        }
+                        case 4:
+                        {
+                            cadastrarData(&alunos[i]);
+                            break;
+                        }
+                        case 5:
+                        {
+                            printf("Alteracao cancelada\n");
+                            return;
+                        }
+                        default:
+                        {
+                            printf("Erro---Opcao invalida\n");
+                            return;
+                        }
+                    }
+                    printf("Aluno com matricula %d alterado com sucesso\n", matricula);
+                }
+                printf("Aluno encontrado. Informe qual dado quer alterar:\n1- Nome\n2- Sexo\n3- CPF\n4- Data de Nascimento\n5- Cancelar\n>>");
                 scanf("%d", &escolha);
                 flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
                 switch (escolha)
@@ -273,87 +314,53 @@ void alterarAluno()
                     }
                 }
                 printf("Aluno com matricula %d alterado com sucesso\n", matricula);
+                break;
             }
-            printf("Aluno encontrado. Informe qual dado quer alterar:\n1- Nome\n2- Sexo\n3- CPF\n4- Data de Nascimento\n5- Cancelar\n>>");
-            scanf("%d", &escolha);
-            flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
-            switch (escolha)
-            {
-                case 1:
-                {
-                    cadastrarNome(&alunos[i]);
-                    break;
-                }
-                case 2:
-                {
-                    cadastrarSexo(&alunos[i]);
-                    break;
-                }
-                case 3:
-                {
-                    cadastrarCPF(&alunos[i]);
-                    break;
-                }
-                case 4:
-                {
-                    cadastrarData(&alunos[i]);
-                    break;
-                }
-                case 5:
-                {
-                    printf("Alteracao cancelada\n");
-                    return;
-                }
-                default:
-                {
-                    printf("Erro---Opcao invalida\n");
-                    return;
-                }
-            }
-            printf("Aluno com matricula %d alterado com sucesso\n", matricula);
-            break;
         }
-    }
-    if (!encontrado)
-    {
-        printf("Erro---Aluno com matricula %d nao encontrado\n", matricula);
+        if (!encontrado)
+        {
+            printf("Erro---Aluno com matricula %d nao encontrado\n", matricula);
+        }
     }
 }
 //
 //Função para excluir aluno
 //
-void excluirAluno()
+void excluirPessoa(pessoa *entrada)
 {
-    if (numAlunos == 0)
+    if (entrada->funcao == 'A')
     {
-        printf("Erro---Nenhum aluno cadastrado.\n");
-        return;
-    }
-
-    int matricula;
-    int encontrado = false;
-    printf("Digite a matricula do aluno a ser excluido\n>>");
-    scanf("%d", &matricula);
-    flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
-
-    for (int i = 0; i < numAlunos; i++)
-    {
-        if (alunos[i].matricula == matricula)
+        if (numAlunos == 0)
         {
-            encontrado = true;
-            //Move todos os alunos após o aluno a ser excluído uma posição para trás
-            for (int j = i; j < numAlunos - 1; j++)
-            {
-                alunos[j] = alunos[j + 1];
-            }
-            numAlunos--;//Decrementa o número de alunos cadastrados
-            printf("Aluno com matricula %d excluido com sucesso\n", matricula);
-            break;
+            printf("Erro---Nenhum aluno cadastrado.\n");
+            return;
         }
-    }
-    if (!encontrado)
-    {
-        printf("Erro---Aluno com matricula %d nao encontrado\n", matricula);
+
+        int matricula;
+        int encontrado = false;
+        printf("Digite a matricula do aluno a ser excluido\n>>");
+        scanf("%d", &matricula);
+        flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
+
+        for (int i = 0; i < numAlunos; i++)
+        {
+            if (alunos[i].matricula == matricula)
+            {
+                encontrado = true;
+                //Move todos os alunos após o aluno a ser excluído uma posição para trás
+                for (int j = i; j < numAlunos - 1; j++)
+                {
+                    alunos[j] = alunos[j + 1];
+                }
+                numAlunos--;//Decrementa o número de alunos cadastrados
+                printf("Aluno com matricula %d excluido com sucesso\n", matricula);
+                break;
+            }
+        }
+        if (!encontrado)
+        {
+            printf("Erro---Aluno com matricula %d nao encontrado\n", matricula);
+        }
     }
 }
 //
