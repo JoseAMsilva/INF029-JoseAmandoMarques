@@ -1051,7 +1051,7 @@ void cadastrarCPF(pessoa *entrada)
         fgets(cpf, 15, stdin);
         fflush(stdin);
         cpf[strcspn(cpf, "\n")] = '\0';//Remove o '\n' do final da string, se houver
-        retorno = validarCPF(&cpf);//Chama a função para validar o CPF retornando true ou false
+        retorno = validarCPF(cpf);//Chama a função para validar o CPF retornando true ou false
 
         if (retorno)
         {
