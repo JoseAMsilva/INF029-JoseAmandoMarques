@@ -69,7 +69,7 @@ int numProfessores = 0;//Número de professores cadastrados
 int menuPrincipal();//Função do menu principal
 int menuAluno();//Função do menu aluno
 int menuProfessor();//Função do menu professor
-void menuDisciplina();//Função do menu disciplina
+int menuDisciplina();//Função do menu disciplina
 int menuRelatorios();//Função do menu relatorios
 int cadastrarAluno(pessoa *aluno);//Função para cadastrar aluno
 void listarAlunos();//Função para listar alunos
@@ -218,12 +218,13 @@ int menuProfessor()
     return 0;
    
 }
-void menuDisciplina()
+int menuDisciplina()
 {
     printf("Menu Disciplina\n");
     //
     //Implementar menu disciplina
     //
+    return 0;
 }
 
 int menuRelatorios()

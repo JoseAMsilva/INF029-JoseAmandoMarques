@@ -30,7 +30,7 @@ int main()
             }
             case 3:
             {
-                menuDisciplina();
+                menuAtual = menuDisciplina();
                 break;
             }
             case 4:
