@@ -25,7 +25,7 @@ int main()
             }  
             case 2:
             {
-                menuProfessor();
+                menuAtual = menuProfessor();
                 break;
             }
             case 3:
@@ -34,6 +34,17 @@ int main()
                 break;
             }
             case 4:
+            {
+                menuAtual = menuRelatorios();
+                break;
+            }
+            case 5:
+            {
+                printf("Buscas ainda não implementadas...\n");
+                menuAtual = 0;
+                break;
+            }
+            case 6:
             {
                 printf("Saindo...\n");
                 sair = true;
