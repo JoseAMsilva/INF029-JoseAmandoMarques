@@ -40,8 +40,8 @@ int main()
             }
             case 5:
             {
-                printf("Buscas ainda não implementadas...\n");
-                menuAtual = 0;
+                
+                menuAtual = buscarPessoas();
                 break;
             }
             case 6:

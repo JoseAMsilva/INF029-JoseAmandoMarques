@@ -90,6 +90,7 @@ void cadastrarSexo(pessoa *entrada);//Função para cadastrar o sexo
 void cadastrarCPF(pessoa *entrada);//Função para cadastrar o CPF
 int validarCPF(char cpf[]);//Função para validar o CPF
 void cadastrarData(pessoa *entrada);//Função para cadastrar a data de nascimento
+int buscarPessoas();//Função para buscar pessoas
 void cadastraMatricula(pessoa *entrada);//Função para cadastrar a matrícula
 void flush_in();//Função para limpar o buffer do teclado
 //
@@ -712,6 +713,87 @@ void listarAniversariantesDoMes()
     return;
 }
 //
+//Função para buscar Pessoas
+//
+int buscarPessoas()
+{
+    if (numAlunos == 0 && numProfessores == 0)
+    {
+        printf("Nenhuma pessoa cadastrada.\n");
+        return false;
+    }
+    //Usa-se uma cópia temporária para não alterar a ordem original dos alunos e professores
+    pessoa alunosTemp[50];
+    pessoa professoresTemp[50];
+    memcpy(alunosTemp, alunos, numAlunos * sizeof(pessoa));
+    memcpy(professoresTemp, professores, numProfessores * sizeof(pessoa));
+
+    int volta = false;
+    int encontrado = false;
+    char nomeBusca[40];
+
+    while (!volta)
+    {
+        int valido = true;
+        printf("Insira o nome das pessoas a serem buscadas ou digite [0] para cancelar (ao menos 3 caracteres)\n>>");
+        fgets(nomeBusca, sizeof(nomeBusca), stdin);
+        nomeBusca[strcspn(nomeBusca, "\n")] = 0; //Remove o '\n' do final da string
+
+        if (strcmp(nomeBusca, "0") == 0)
+        {
+            volta = true;
+            break;
+        }
+        int carcteres = strlen(nomeBusca);
+
+        if (carcteres < 3)
+        {
+            printf("Erro---Numero de caracteres invalidos.\n");
+            valido = false;
+        }
+        
+        if (valido)
+        {
+            for (int i = 0; i < numAlunos; i++)
+            {
+                if (strstr(strlwr(alunosTemp[i].nome), strlwr(nomeBusca)) != NULL)
+                {
+                    printf("Matricula: %d\n", alunos[i].matricula);
+                    printf("Nome: %s\n", alunos[i].nome);
+                    printf("Sexo: %c\n", alunos[i].sexo);
+                    printf("CPF: %s\n", alunos[i].cpf);
+                    printf("Data de Nascimento: %02d/%02d/%04d\n",
+                    alunos[i].dataNasc.dia, alunos[i].dataNasc.mes, alunos[i].dataNasc.ano);
+                    printf("Idade: %d\n", alunos[i].idade);
+                    printf("\n");
+                    encontrado = true;
+                }
+            }
+            for (int i = 0; i < numProfessores; i++)
+            {
+                if (strstr(strlwr(professoresTemp[i].nome), strlwr(nomeBusca)) != NULL)
+                {
+                    printf("Matricula: %d\n", professores[i].matricula);
+                    printf("Nome: %s\n", professores[i].nome);
+                    printf("Sexo: %c\n", professores[i].sexo);
+                    printf("CPF: %s\n", professores[i].cpf);
+                    printf("Data de Nascimento: %02d/%02d/%04d\n",
+                    professores[i].dataNasc.dia, professores[i].dataNasc.mes, professores[i].dataNasc.ano);
+                    printf("Idade: %d\n", professores[i].idade);
+                    printf("\n");
+                    encontrado = true;
+                }
+            }
+            if (!encontrado)
+            {
+                printf("Nenhuma pessoa encontrada com o nome %s.\n", nomeBusca);
+            }
+        }   
+    }
+
+    return 0;
+}
+//
 //Função para alterar pessoa
 //
 void alterarPessoa(pessoa *entrada)
@@ -1281,6 +1363,23 @@ void cadastraMatricula(pessoa *entrada)
 {
     matriculaGlobal++;//Incrementa a variável global para gerar uma nova matrícula
     entrada->matricula = matriculaGlobal;//Define a matrícula como a variável global
+}
+//
+//Função para deiar a primeira letra de cada palavra em maiúscula
+//
+void strfirstupper(char str[])
+{
+    int i = 0;
+    while (str[i] != '\0')
+    {
+        str[i] = tolower(str[i]);//Converte todo o nome para minúsculo
+
+        if (i == 0 || str[i - 1] == ' ')
+        {
+            str[i] = toupper(str[i]);
+        }
+        i++;
+    }
 }
 //
 //Função para limpar o buffer do teclado
