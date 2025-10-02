@@ -57,22 +57,34 @@ typedef struct Disciplina
 int matriculaGlobal = 0;//Variável global para gerar matrículas únicas
 int numDisciplinas = 0;//Número de disciplinas cadastradas
 disciplina disciplinas[20];//Vetor para armazenar até 20 disciplinas
+pessoa aluno;//Estrutura para aluno
 pessoa alunos[100];//Vetor para armazenar até 100 alunos
 int numAlunos = 0;//Número de alunos cadastrados
 pessoa professores[50];//Vetor para armazenar até 50 professores
+pessoa professor;//Estrutura para professor
 int numProfessores = 0;//Número de professores cadastrados
 //
 //Protótipos
 //
 int menuPrincipal();//Função do menu principal
 int menuAluno();//Função do menu aluno
-void menuProfessor();//Função do menu professor
 int menuDisciplina();//Função do menu disciplina
 int cadastrarDisciplina();
 int listarDisciplinas();
 int alterarAluno();
+int menuProfessor();//Função do menu professor
+int menuRelatorios();//Função do menu relatorios
 int cadastrarAluno(pessoa *aluno);//Função para cadastrar aluno
 void listarAlunos();//Função para listar alunos
+void listarAlunosPorSexo();//Função para listar alunos por sexo
+void listarAlunosOrdemAlfabetica();//Função para listar alunos em ordem alfabética
+void ordenarAlunosPorDataNascimento();//Função para ordenar alunos por data de nascimento
+int cadastrarProfessor(pessoa *professor);//Função para cadastrar professor
+void listarProfessores();//Função para listar professores
+void listarProfessoresPorSexo();//Função para listar professores por sexo
+void listarProfessoresOrdemAlfabetica();//Função para listar professores em ordem alfabética
+void ordenarProfessoresPorDataNascimento();//Função para ordenar professores por data de nascimento
+void listarAniversariantesDoMes();//Função para listar aniversariantes do mês
 void alterarPessoa(pessoa *entrada);//Função para alterar aluno
 void excluirPessoa(pessoa *entrada);//Função para excluir aluno
 void cadastrarNome(pessoa *entrada);//Função para cadastrar o nome
@@ -81,6 +93,7 @@ void cadastrarSexo(pessoa *entrada);//Função para cadastrar o sexo
 void cadastrarCPF(pessoa *entrada);//Função para cadastrar o CPF
 int validarCPF(char cpf[]);//Função para validar o CPF
 void cadastrarData(pessoa *entrada);//Função para cadastrar a data de nascimento
+int buscarPessoas();//Função para buscar pessoas
 void cadastraMatricula(pessoa *entrada);//Função para cadastrar a matrícula
 void flush_in();//Função para limpar o buffer do teclado
 //
@@ -89,10 +102,10 @@ void flush_in();//Função para limpar o buffer do teclado
 int menuPrincipal()
 {
     int escolhaMain;
-    printf("MENU PRINCIPAL:\n1- Alunos\n2- Professores\n3- Disciplinas\n4- Sair\n>>");
+    printf("MENU PRINCIPAL:\n1- Alunos\n2- Professores\n3- Disciplinas\n4- Relatorios\n5- Busca\n6- Sair\n>>");
     scanf("%d", &escolhaMain);
     flush_in();
-    if (escolhaMain >= 1 && escolhaMain <= 4)
+    if (escolhaMain >= 1 && escolhaMain <= 6)
     {
         return escolhaMain;
     }
@@ -118,7 +131,7 @@ int menuAluno()
         {
             switch (escolhaAluno)
             {
-                pessoa aluno;
+                aluno.funcao = 'A';//Define a função como aluno
                 case 1:
                 {
                     int retorno = cadastrarAluno(&aluno);
@@ -158,88 +171,149 @@ int menuAluno()
 //
 //Menu professor
 //
-void menuProfessor()
+int menuProfessor()
 {
-    printf("Menu Professor\n");
-    //
-    //Implementar menu professor
-    //
-}
-int menuDisciplina()
-{
-    printf("Menu Disciplina\n");
-    int escolhaDisciplina;
-  
-        printf("MENU DISCIPLINA:\n1- Cadastrar\n2- Listar\n3- Alterar aluno \n4- Excluir\n5- Voltar\n>>");
-        scanf("%d", &escolhaDisciplina);
+    int voltar = false;
+    int escolhaProfessor;
+    while (!voltar)
+    {
+        printf("MENU PROFESSORES:\n1- Cadastrar\n2- Listar\n3- Alterar\n4- Excluir\n5- Voltar\n>>");
+        scanf("%d", &escolhaProfessor);
         flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
 
-
-     if (escolhaDisciplina >= 1 && escolhaDisciplina <= 5)
+        if (escolhaProfessor >= 1 && escolhaProfessor <= 5)
         {
-            switch (escolhaDisciplina)
+            professor.funcao = 'P';//Define a função como professor
+            switch (escolhaProfessor)
             {
-                disciplina novaDisciplina;
                 case 1:
                 {
-                    int retorno = cadastrarDisciplina(&disciplinas[numDisciplinas]);
+                    int retorno = cadastrarProfessor(&professor);
                     if (retorno)
                     {
-                        printf("Disciplina cadastrada com sucesso\n");
+                        printf("Professor cadastrado com sucesso\n");
                     }
-
                     break;
                 }
-
                 case 2:
                 {
-                    listarDisciplinas();
+                    listarProfessores();
                     break;
                 }
-
                 case 3:
                 {
-                    alterarAlunoDisciplina();
+                    alterarPessoa(&professor);
                     break;
                 }
-            
-    
-
-
-               
+                case 4:
+                {
+                    excluirPessoa(&professor);
+                    break;
+                }
+                case 5:
+                {
+                    printf("Voltando...\n");
+                    voltar = true;
+                    break;
+                }
             }
         }
+    }
     return 0;
-    }
    
-    //Implementar menu disciplina
+}
 
-int cadastrarDisciplina(disciplina *novaDisciplina)
+int menuDisciplina()
 {
-    if(numDisciplinas >= 20) {
+    int escolhaDisciplina;
+    int voltar = false;
+
+ 
+    while (!voltar)
+    {
+        printf("\n--- MENU DISCIPLINA ---\n");
+        printf("1- Cadastrar\n");
+        printf("2- Listar\n");
+        printf("3- Adicionar/Remover Aluno da Disciplina\n");
+        printf("4- Voltar ao Menu Principal\n");
+        printf(">> ");
+        
+        scanf("%d", &escolhaDisciplina);
+        flush_in();
+
+        switch (escolhaDisciplina)
+        {
+            case 1:
+                cadastrarDisciplina();
+                break; 
+            case 2:
+                listarDisciplinas();
+                break;
+            case 3:
+                alterarAlunoDisciplina();
+                break;
+            case 4:
+                voltar = true; 
+                break;
+            default:
+                printf("Erro---Opcao invalida.\n");
+                break;
+        }
+    }
+    
+    return 0; 
+}
+   
+ 
+
+    int cadastrarDisciplina()
+{
+    if (numDisciplinas >= 20) {
         printf("Erro---Número máximo de disciplinas atingido.\n");
-        return false;
+        return 0;
     }
 
-    printf("Digite o nome da disciplina:\n>>");
-    fgets(novaDisciplina->nome, 20, stdin);
-    novaDisciplina->nome[strcspn(novaDisciplina->nome, "\n")] = '\0';
+    disciplina novaDisciplina;
 
-    printf("Digite o código da disciplina:\n>>");
-    fgets(novaDisciplina->codigo, 10, stdin);
-    novaDisciplina->codigo[strcspn(novaDisciplina->codigo, "\n")] = '\0';
+    printf("Digite o nome da disciplina:\n>> ");
+    fgets(novaDisciplina.nome, 20, stdin);
+    novaDisciplina.nome[strcspn(novaDisciplina.nome, "\n")] = '\0';
 
-    printf("Digite o semestre da disciplina:\n>>");
-    scanf("%d", &novaDisciplina->semestre);
+    printf("Digite o código da disciplina:\n>> ");
+    fgets(novaDisciplina.codigo, 10, stdin);
+    novaDisciplina.codigo[strcspn(novaDisciplina.codigo, "\n")] = '\0';
+
+    printf("Digite o semestre da disciplina:\n>> ");
+    scanf("%d", &novaDisciplina.semestre);
     flush_in();
 
-  
+    int matriculaProf;
+    printf("Digite a matrícula do professor:\n>> ");
+    scanf("%d", &matriculaProf);
+    flush_in();
 
-    // Incrementa o contador global
-    numDisciplinas++;
+    int encontrado = 0;
+    for (int i = 0; i < numProfessores; i++) {
+        if (professores[i].matricula == matriculaProf) {
+            novaDisciplina.professor = professores[i];
+            encontrado = 1;
+            break;
+        }
+    }
 
-    return true;
+    if (!encontrado)
+        printf("Professor não encontrado. Disciplina cadastrada sem professor.\n");
+
+    novaDisciplina.numAlunos = 0; // começa sem alunos
+    disciplinas[numDisciplinas++] = novaDisciplina;
+
+    printf("Disciplina cadastrada com sucesso!\n");
+
+  return menuDisciplina();
+
 }
+
+
 
     int listarDisciplinas(){
 
@@ -251,15 +325,27 @@ int cadastrarDisciplina(disciplina *novaDisciplina)
         flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
 
         if(escolhaListar == 1){
-        for(int i=0; i<20;i++){
+        for(int i=0; i<numDisciplinas;i++){
 
         printf("Disciplina %d:\n", i+1);
         printf("Nome: %s\n", disciplinas[i].nome);
         printf("Codigo: %s\n", disciplinas[i].codigo);
         printf("Semestre: %d\n", disciplinas[i].semestre);
         printf("\n");
+
+        // Verifica se tem professor cadastrado
+        if(disciplinas[i].professor.matricula != 0){
+            printf("Professor: %s (Matricula: %d)\n", disciplinas[i].professor.nome, disciplinas[i].professor.matricula);
+        } else {
+            printf("Professor: Não cadastrado\n");
         }
+
+        printf("Número de alunos matriculados: %d\n", disciplinas[i].numAlunos);
+        printf("\n");
+    }
+
         }
+        
 
         if(escolhaListar == 2){
 
@@ -276,6 +362,24 @@ int cadastrarDisciplina(disciplina *novaDisciplina)
         printf("Código: %s\n", disciplinas[i].codigo);
         printf("Semestre: %d\n", disciplinas[i].semestre);
         encontrado = 1;
+
+        if(disciplinas[i].professor.matricula != 0){
+            printf("Professor: %s (Matricula: %d)\n", disciplinas[i].professor.nome, disciplinas[i].professor.matricula);
+        } else {
+            printf("Professor: Não cadastrado\n");
+        }
+
+         // Lista alunos matriculados
+            if(disciplinas[i].numAlunos == 0){
+                printf("Nenhum aluno matriculado nesta disciplina.\n");
+            } else {
+                printf("Alunos matriculados:\n");
+                for(int j = 0; j < disciplinas[i].numAlunos; j++){
+                    printf("Matricula: %d | Nome: %s\n", 
+                        disciplinas[i].alunos[j].matricula, 
+                        disciplinas[i].alunos[j].nome);
+                }
+            }
         break;
         }
         }
@@ -311,7 +415,7 @@ int alterarAlunoDisciplina() {
 
             if(opcao == 1) { // adicionar aluno
                 if(disciplinas[i].numAlunos >= 50){
-                    printf("Erro---Disciplina cheia!\n");
+                    printf("Erro- Disciplina cheia!\n");
                     return 0;
                 }
 
@@ -370,6 +474,105 @@ int alterarAlunoDisciplina() {
 }
 
 
+int menuRelatorios()
+{
+    int escolhaRelatorios;
+    int voltar = false;
+
+    while (!voltar)
+    {
+        printf("MENU RELATORIOS\n1- Listar Alunos por Sexo\n2- Listar Alunos em ordem alfabetica\n3- Ordenar Alunos por data de nascimento\n4- Listar Professores por Sexo\n5- Listar Professores em ordem alfabetica\n6- Ordenar Professores por data de nascimento\n7- Aniversariantes do mes\n8- Voltar\n>>");
+        scanf("%d", &escolhaRelatorios);
+        flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após
+        if (escolhaRelatorios >= 1 && escolhaRelatorios <= 8)
+        {
+            switch (escolhaRelatorios)
+            {
+                case 1:
+                {
+                    if (numAlunos == 0)
+                    {
+                        printf("Nenhum aluno cadastrado.\n");
+                        break;
+                    }
+                    listarAlunosPorSexo();
+                    break;
+                }
+                case 2:
+                {
+                    if (numAlunos == 0)
+                    {
+                        printf("Nenhum aluno cadastrado.\n");
+                        break;
+                    }
+                    listarAlunosOrdemAlfabetica();
+                    break;
+                }
+                case 3:
+                {
+                    if (numAlunos == 0)
+                    {
+                        printf("Nenhum aluno cadastrado.\n");
+                        break;
+                    }
+                    ordenarAlunosPorDataNascimento();
+                    break;
+                }
+                case 4:
+                {
+                    if (numProfessores == 0)
+                    {
+                        printf("Nenhum professor cadastrado.\n");
+                        break;
+                    }
+                    listarProfessoresPorSexo();
+                    break;
+                }
+                case 5:
+                {
+                    if (numProfessores == 0)
+                    {
+                        printf("Nenhum professor cadastrado.\n");
+                        break;
+                    }
+                    listarProfessoresOrdemAlfabetica();
+                    break;
+                }
+                case 6:
+                {
+                    if (numProfessores == 0)
+                    {
+                        printf("Nenhum professor cadastrado.\n");
+                        break;
+                    }
+                    ordenarProfessoresPorDataNascimento();
+                    break;
+                }
+                case 7:
+                {
+                    if (numProfessores == 0 && numAlunos == 0)
+                    {
+                        printf("Nenhuma pessoa cadastrada.\n");
+                        break;
+                    }
+                    listarAniversariantesDoMes();
+                    break;
+                }
+                case 8:
+                {
+                    printf("Voltando...\n");
+                    voltar = true;
+                    break;
+                }
+            }
+        }
+    }
+    return 0;
+}
+//
+//Função para cadastrar aluno
+//
+
 int cadastrarAluno(pessoa *novoAluno)
 {
     cadastrarNome(novoAluno);
@@ -408,22 +611,458 @@ void listarAlunos()
     }
 }
 //
-//Função para alterar aluno
+//Função para listar alunos por sexo
+//
+void listarAlunosPorSexo()
+{
+    char sexo;
+    int encontrado = false;
+    printf("Digite o sexo dos alunos a serem listados (M/F/O)\n>>");
+    scanf("%c", &sexo);
+    flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
+    sexo = toupper(sexo);//Converte para maiúsculo
+
+    if (sexo != 'M' && sexo != 'F' && sexo != 'O')
+    {
+        printf("Erro---Sexo invalido. Digite M para Masculino, F para Feminino ou O para Outro.\n");
+        return;
+    }
+
+    for (int i = 0; i < numAlunos; i++)
+    {
+        if (alunos[i].sexo == sexo)
+        {
+            printf("Matricula: %d\n", alunos[i].matricula);
+            printf("Nome: %s\n", alunos[i].nome);
+            printf("Sexo: %c\n", alunos[i].sexo);
+            printf("CPF: %s\n", alunos[i].cpf);
+            printf("Data de Nascimento: %02d/%02d/%04d\n",
+            alunos[i].dataNasc.dia, alunos[i].dataNasc.mes, alunos[i].dataNasc.ano);
+            printf("Idade: %d\n", alunos[i].idade);
+            printf("\n");
+            encontrado = true;
+        }
+    }
+    if (!encontrado)
+    {
+        printf("Nenhum aluno cadastrado com o sexo %c.\n", sexo);
+    }
+    
+    return;
+}
+//
+//Função para listar alunos em ordem alfabética
+//
+void listarAlunosOrdemAlfabetica()
+{
+    //Cria um vetor temporário para ordenar os alunos
+    pessoa alunosTemp[100];
+    memcpy(alunosTemp, alunos, numAlunos * sizeof(pessoa));
+
+    //Ordena o vetor temporário usando o algoritmo de bolha
+    for (int i = 0; i < numAlunos - 1; i++)
+    {
+        for (int j = 0; j < numAlunos - i - 1; j++)
+        {
+            if (strcmp(alunosTemp[j].nome, alunosTemp[j + 1].nome) > 0)
+            {
+                pessoa temp = alunosTemp[j];
+                alunosTemp[j] = alunosTemp[j + 1];
+                alunosTemp[j + 1] = temp;
+            }
+        }
+    }
+
+    //Imprime a lista de alunos ordenada
+    printf("Lista de Alunos em Ordem Alfabetica:\n");
+    for (int i = 0; i < numAlunos; i++)
+    {
+        printf("Matricula: %d\n", alunosTemp[i].matricula);
+        printf("Nome: %s\n", alunosTemp[i].nome);
+        printf("Sexo: %c\n", alunosTemp[i].sexo);
+        printf("CPF: %s\n", alunosTemp[i].cpf);
+        printf("Data de Nascimento: %02d/%02d/%04d\n", alunosTemp[i].dataNasc.dia, alunosTemp[i].dataNasc.mes, alunosTemp[i].dataNasc.ano);
+        printf("Idade: %d\n", alunosTemp[i].idade);
+        printf("\n");
+    }
+}
+//
+//Função para ordenar alunos por data de nascimento
+//
+void ordenarAlunosPorDataNascimento()
+{
+    //Cria um vetor temporário para ordenar os alunos
+    pessoa alunosTemp[100];
+    memcpy(alunosTemp, alunos, numAlunos * sizeof(pessoa));
+
+    //Ordena o vetor temporário usando o algoritmo de bolha
+    for (int i = 0; i < numAlunos - 1; i++)
+    {
+        for (int j = 0; j < numAlunos - i - 1; j++)
+        {
+            if (alunosTemp[j].dataNasc.ano > alunosTemp[j + 1].dataNasc.ano)
+            {
+                pessoa temp = alunosTemp[j];
+                alunosTemp[j] = alunosTemp[j + 1];
+                alunosTemp[j + 1] = temp;
+            }
+            else if (alunosTemp[j].dataNasc.ano == alunosTemp[j + 1].dataNasc.ano)
+            {
+                if (alunosTemp[j].dataNasc.mes > alunosTemp[j + 1].dataNasc.mes)
+                {
+                    pessoa temp = alunosTemp[j];
+                    alunosTemp[j] = alunosTemp[j + 1];
+                    alunosTemp[j + 1] = temp;
+                }
+                else if (alunosTemp[j].dataNasc.mes == alunosTemp[j + 1].dataNasc.mes)
+                {
+                    if (alunosTemp[j].dataNasc.dia > alunosTemp[j + 1].dataNasc.dia)
+                    {
+                        pessoa temp = alunosTemp[j];
+                        alunosTemp[j] = alunosTemp[j + 1];
+                        alunosTemp[j + 1] = temp;
+                    }
+                }
+            }
+        }
+    }
+    //Imprime a lista de alunos ordenada por data de nascimento
+    printf("Lista de Alunos em Ordem por Data de Nascimento:\n");
+    for (int i = 0; i < numAlunos; i++)
+    {
+        printf("Matricula: %d\n", alunosTemp[i].matricula);
+        printf("Nome: %s\n", alunosTemp[i].nome);
+        printf("Sexo: %c\n", alunosTemp[i].sexo);
+        printf("CPF: %s\n", alunosTemp[i].cpf);
+        printf("Data de Nascimento: %02d/%02d/%04d\n",
+        alunosTemp[i].dataNasc.dia, alunosTemp[i].dataNasc.mes, alunosTemp[i].dataNasc.ano);
+        printf("Idade: %d\n", alunosTemp[i].idade);
+        printf("\n");
+    }
+    return;
+}
+//
+//Função para cadastrar professor
+//
+int cadastrarProfessor(pessoa *novoProfessor)
+{
+    cadastrarNome(novoProfessor);
+    cadastrarSexo(novoProfessor);
+    novoProfessor->funcao = 'P';//Define a função como professor
+    cadastrarCPF(novoProfessor);
+    cadastrarData(novoProfessor);
+    cadastraMatricula(novoProfessor);
+    novoProfessor->situacao = 'A';//Define a situação como ativa
+    professores[numProfessores] = *novoProfessor;//Adiciona o novo professor ao vetor de professores
+    numProfessores++;//Incrementa o número de professores cadastrados
+    return true;
+}
+//
+//Função para listar professores
+//
+void listarProfessores()
+{
+    if (numProfessores == 0)
+    {
+        printf("Nenhum professor cadastrado.\n");
+        return;
+    }
+
+    printf("Lista de Professores Cadastrados\n");
+    for (int i = 0; i < numProfessores; i++)
+    {
+        printf("Matricula: %d\n", professores[i].matricula);
+        printf("Nome: %s\n", professores[i].nome);
+        printf("Sexo: %c\n", professores[i].sexo);
+        printf("CPF: %s\n", professores[i].cpf);
+        printf("Data de Nascimento: %02d/%02d/%04d\n", professores[i].dataNasc.dia, professores[i].dataNasc.mes, professores[i].dataNasc.ano);
+        printf("Idade: %d\n", professores[i].idade);
+        printf("\n");
+    }
+}
+//
+//Função para listar professores por sexo
+//
+void listarProfessoresPorSexo()
+{
+    char sexo;
+    int encontrado = false;
+
+    printf("Digite o sexo dos professores a serem listados (M/F/O)\n>>");
+    scanf("%c", &sexo);
+    flush_in();//Limpa o buffer do teclado removendo o '\n' que
+    sexo = toupper(sexo);//Converte para maiúsculo
+
+    if (sexo != 'M' && sexo != 'F' && sexo != 'O')
+    {
+        printf("Erro---Sexo invalido. Digite M para Masculino, F para Feminino ou O para Outro.\n");
+        return;
+    }
+    for (int i = 0; i < numProfessores; i++)
+    {
+        if (professores[i].sexo == sexo)
+        {
+            printf("Matricula: %d\n", professores[i].matricula);
+            printf("Nome: %s\n", professores[i].nome);
+            printf("Sexo: %c\n", professores[i].sexo);
+            printf("CPF: %s\n", professores[i].cpf);
+            printf("Data de Nascimento: %02d/%02d/%04d\n",
+            professores[i].dataNasc.dia, professores[i].dataNasc.mes, professores[i].dataNasc.ano);
+            printf("Idade: %d\n", professores[i].idade);
+            printf("\n");
+            encontrado = true;
+        }
+    }
+    if (!encontrado)
+    {
+        if (sexo == 'M') {
+            printf("Nenhum professor cadastrado com o sexo Masculino.\n");
+        } else if (sexo == 'F') {
+            printf("Nenhuma professora cadastrada com o sexo Feminino.\n");
+        } else {
+            printf("Nenhum professor cadastrado com o sexo Outro.\n");
+        }
+    }
+    return;
+}
+//
+//Função para listar professores em ordem alfabética
+//
+void listarProfessoresOrdemAlfabetica()
+{
+    //Cria um vetor temporário para ordenar os professores
+    pessoa professoresTemp[50];
+    memcpy(professoresTemp, professores, numProfessores * sizeof(pessoa));
+
+    //Ordena o vetor temporário usando o algoritmo de bolha
+    for (int i = 0; i < numProfessores - 1; i++)
+    {
+        for (int j = 0; j < numProfessores - i - 1; j++)
+        {
+            if (strcmp(professoresTemp[j].nome, professoresTemp[j + 1].nome) > 0)
+            {
+                pessoa temp = professoresTemp[j];
+                professoresTemp[j] = professoresTemp[j + 1];
+                professoresTemp[j + 1] = temp;
+            }
+        }
+    }
+
+    //Imprime a lista de professores ordenada
+    printf("Lista de Professores em Ordem Alfabetica:\n");
+    for (int i = 0; i < numProfessores; i++)
+    {
+        printf("Matricula: %d\n", professoresTemp[i].matricula);
+        printf("Nome: %s\n", professoresTemp[i].nome);
+        printf("Sexo: %c\n", professoresTemp[i].sexo);
+        printf("CPF: %s\n", professoresTemp[i].cpf);
+        printf("Data de Nascimento: %02d/%02d/%04d\n", professoresTemp[i].dataNasc.dia, professoresTemp[i].dataNasc.mes, professoresTemp[i].dataNasc.ano);
+        printf("Idade: %d\n", professoresTemp[i].idade);
+        printf("\n");
+    }
+}
+//
+//Função para ordenar professores por data de nascimento
+//
+void ordenarProfessoresPorDataNascimento()
+{
+    //Cria um vetor temporário para ordenar os professores
+    pessoa professoresTemp[50];
+    memcpy(professoresTemp, professores, numProfessores * sizeof(pessoa));
+    //Ordena o vetor temporário
+    for (int i = 0; i < numProfessores - 1; i++)
+    {
+        for (int j = 0; j < numProfessores - i - 1; j++)
+        {
+            if (professoresTemp[j].dataNasc.ano > professoresTemp[j + 1].dataNasc.ano)
+            {
+                pessoa temp = professoresTemp[j];
+                professoresTemp[j] = professoresTemp[j + 1];
+                professoresTemp[j + 1] = temp;
+            }
+            else if (professoresTemp[j].dataNasc.ano == professoresTemp[j + 1].dataNasc.ano)
+            {
+                if (professoresTemp[j].dataNasc.mes > professoresTemp[j + 1].dataNasc.mes)
+                {
+                    pessoa temp = professoresTemp[j];
+                    professoresTemp[j] = professoresTemp[j + 1];
+                    professoresTemp[j + 1] = temp;
+                }
+                else if (professoresTemp[j].dataNasc.mes == professoresTemp[j + 1].dataNasc.mes)
+                {
+                    if (professoresTemp[j].dataNasc.dia > professoresTemp[j + 1].dataNasc.dia)
+                    {
+                        pessoa temp = professoresTemp[j];
+                        professoresTemp[j] = professoresTemp[j + 1];
+                        professoresTemp[j + 1] = temp;
+                    }
+                }
+            }
+        }
+    }
+    //Imprime a lista de professores ordenada por data de nascimento
+    printf("Lista de Professores em Ordem por Data de Nascimento:\n");
+    for (int i = 0; i < numProfessores; i++)
+    {
+        printf("Matricula: %d\n", professoresTemp[i].matricula);
+        printf("Nome: %s\n", professoresTemp[i].nome);
+        printf("Sexo: %c\n", professoresTemp[i].sexo);
+        printf("CPF: %s\n", professoresTemp[i].cpf);
+        printf("Data de Nascimento: %02d/%02d/%04d\n",
+        professoresTemp[i].dataNasc.dia, professoresTemp[i].dataNasc.mes, professoresTemp[i].dataNasc.ano);
+        printf("Idade: %d\n", professoresTemp[i].idade);
+        printf("\n");
+    }
+
+    return;
+}
+//
+//Função para listar aniversariantes do mês
+//
+void listarAniversariantesDoMes()
+{
+    int mesAtual;
+    int encontrado = false;
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    mesAtual = tm.tm_mon + 1;
+
+    for (int i = 0; i < numAlunos; i++)
+    {
+        if (alunos[i].dataNasc.mes == mesAtual)
+        {
+            printf("Matricula: %d\n", alunos[i].matricula);
+            printf("Nome: %s\n", alunos[i].nome);
+            printf("Sexo: %c\n", alunos[i].sexo);
+            printf("CPF: %s\n", alunos[i].cpf);
+            printf("Data de Nascimento: %02d/%02d/%04d\n",
+            alunos[i].dataNasc.dia, alunos[i].dataNasc.mes, alunos[i].dataNasc.ano);
+            printf("Idade: %d\n", alunos[i].idade);
+            printf("\n");
+            encontrado = true;
+        }
+    }
+
+    for (int i = 0; i < numProfessores; i++)
+    {
+        if (professores[i].dataNasc.mes == mesAtual)
+        {
+            printf("Matricula: %d\n", professores[i].matricula);
+            printf("Nome: %s\n", professores[i].nome);
+            printf("Sexo: %c\n", professores[i].sexo);
+            printf("CPF: %s\n", professores[i].cpf);
+            printf("Data de Nascimento: %02d/%02d/%04d\n",
+            professores[i].dataNasc.dia, professores[i].dataNasc.mes, professores[i].dataNasc.ano);
+            printf("Idade: %d\n", professores[i].idade);
+            printf("\n");
+            encontrado = true;
+        }
+    }
+
+    if (!encontrado)
+    {
+        printf("Nenhum aniversariante no mes %d.\n", mesAtual);
+    }
+    return;
+}
+//
+//Função para buscar Pessoas
+//
+int buscarPessoas()
+{
+    if (numAlunos == 0 && numProfessores == 0)
+    {
+        printf("Nenhuma pessoa cadastrada.\n");
+        return false;
+    }
+    //Usa-se uma cópia temporária para não alterar a ordem original dos alunos e professores
+    pessoa alunosTemp[50];
+    pessoa professoresTemp[50];
+    memcpy(alunosTemp, alunos, numAlunos * sizeof(pessoa));
+    memcpy(professoresTemp, professores, numProfessores * sizeof(pessoa));
+
+    int volta = false;
+    int encontrado = false;
+    char nomeBusca[40];
+
+    while (!volta)
+    {
+        int valido = true;
+        printf("Insira o nome das pessoas a serem buscadas ou digite [0] para cancelar (ao menos 3 caracteres)\n>>");
+        fgets(nomeBusca, sizeof(nomeBusca), stdin);
+        nomeBusca[strcspn(nomeBusca, "\n")] = 0; //Remove o '\n' do final da string
+
+        if (strcmp(nomeBusca, "0") == 0)
+        {
+            volta = true;
+            break;
+        }
+        int carcteres = strlen(nomeBusca);
+
+        if (carcteres < 3)
+        {
+            printf("Erro---Numero de caracteres invalidos.\n");
+            valido = false;
+        }
+        
+        if (valido)
+        {
+            for (int i = 0; i < numAlunos; i++)
+            {
+                if (strstr(strlwr(alunosTemp[i].nome), strlwr(nomeBusca)) != NULL)
+                {
+                    printf("Matricula: %d\n", alunos[i].matricula);
+                    printf("Nome: %s\n", alunos[i].nome);
+                    printf("Sexo: %c\n", alunos[i].sexo);
+                    printf("CPF: %s\n", alunos[i].cpf);
+                    printf("Data de Nascimento: %02d/%02d/%04d\n",
+                    alunos[i].dataNasc.dia, alunos[i].dataNasc.mes, alunos[i].dataNasc.ano);
+                    printf("Idade: %d\n", alunos[i].idade);
+                    printf("\n");
+                    encontrado = true;
+                }
+            }
+            for (int i = 0; i < numProfessores; i++)
+            {
+                if (strstr(strlwr(professoresTemp[i].nome), strlwr(nomeBusca)) != NULL)
+                {
+                    printf("Matricula: %d\n", professores[i].matricula);
+                    printf("Nome: %s\n", professores[i].nome);
+                    printf("Sexo: %c\n", professores[i].sexo);
+                    printf("CPF: %s\n", professores[i].cpf);
+                    printf("Data de Nascimento: %02d/%02d/%04d\n",
+                    professores[i].dataNasc.dia, professores[i].dataNasc.mes, professores[i].dataNasc.ano);
+                    printf("Idade: %d\n", professores[i].idade);
+                    printf("\n");
+                    encontrado = true;
+                }
+            }
+            if (!encontrado)
+            {
+                printf("Nenhuma pessoa encontrada com o nome %s.\n", nomeBusca);
+            }
+        }   
+    }
+
+    return 0;
+}
+//
+//Função para alterar pessoa
 //
 void alterarPessoa(pessoa *entrada)
 {
+    int encontrado = false;
+    int matricula;
+    int escolha;
+
     if (entrada->funcao == 'A')
     {
-    
         if (numAlunos == 0)
         {
             printf("Erro---Nenhum aluno cadastrado.\n");
             return;
         }
-
-        int matricula;
-        int encontrado = false;
-        int escolha;
+        encontrado = false;
         printf("Digite a matricula do aluno a ser alterado\n>>");
         scanf("%d", &matricula);
         flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
@@ -477,49 +1116,83 @@ void alterarPessoa(pessoa *entrada)
                     }
                     printf("Aluno com matricula %d alterado com sucesso\n", matricula);
                 }
-                printf("Aluno encontrado. Informe qual dado quer alterar:\n1- Nome\n2- Sexo\n3- CPF\n4- Data de Nascimento\n5- Cancelar\n>>");
-                scanf("%d", &escolha);
-                flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
-                switch (escolha)
-                {
-                    case 1:
-                    {
-                        cadastrarNome(&alunos[i]);
-                        break;
-                    }
-                    case 2:
-                    {
-                        cadastrarSexo(&alunos[i]);
-                        break;
-                    }
-                    case 3:
-                    {
-                        cadastrarCPF(&alunos[i]);
-                        break;
-                    }
-                    case 4:
-                    {
-                        cadastrarData(&alunos[i]);
-                        break;
-                    }
-                    case 5:
-                    {
-                        printf("Alteracao cancelada\n");
-                        return;
-                    }
-                    default:
-                    {
-                        printf("Erro---Opcao invalida\n");
-                        return;
-                    }
-                }
-                printf("Aluno com matricula %d alterado com sucesso\n", matricula);
-                break;
+                
             }
         }
         if (!encontrado)
         {
             printf("Erro---Aluno com matricula %d nao encontrado\n", matricula);
+        }
+    }
+
+    else if (entrada->funcao == 'P')
+    {
+        if (numProfessores == 0)
+        {
+            printf("Erro---Nenhum professor cadastrado.\n");
+            return;
+        }
+        encontrado = false;
+
+        printf("Digite a matricula do professor a ser alterado\n>>");
+        scanf("%d", &matricula);
+        flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
+        if (numProfessores == 0)
+        {
+            printf("Erro---Nenhum professor cadastrado.\n");
+            return;
+        }
+        for (int i = 0; i < numProfessores; i++)
+        {
+            if (professores[i].matricula == matricula)
+            {
+                encontrado = true;
+                while (escolha != 5)
+                {
+                    printf("Informe qual dado quer alterar:\n1- Nome\n2- Sexo\n3- CPF\n4- Data de Nascimento\n5- Cancelar\n>>");
+                    scanf("%d", &escolha);
+                    flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
+                    switch (escolha)
+                    {
+                        case 1:
+                        {
+                            cadastrarNome(&professores[i]);
+                            break;
+                        }
+                        case 2:
+                        {
+                            cadastrarSexo(&professores[i]);
+                            break;
+                        }
+                        case 3:
+                        {
+                            cadastrarCPF(&professores[i]);
+                            break;
+                        }
+                        case 4:
+                        {
+                            cadastrarData(&professores[i]);
+                            break;
+                        }
+                        case 5:
+                        {
+                            printf("Alteracao cancelada\n");
+                            return;
+                        }
+                        default:
+                        {
+                            printf("Erro---Opcao invalida\n");
+                            return;
+                        }
+                    }
+                    printf("Professor com matricula %d alterado com sucesso\n", matricula);
+                }
+
+            }
+        }
+        if (!encontrado)
+        {
+            printf("Erro---Professor com matricula %d nao encontrado\n", matricula);
         }
     }
 }
@@ -562,6 +1235,39 @@ void excluirPessoa(pessoa *entrada)
             printf("Erro---Aluno com matricula %d nao encontrado\n", matricula);
         }
     }
+    if (entrada->funcao == 'P')
+    {
+        if (numProfessores == 0)
+        {
+            printf("Erro---Nenhum professor cadastrado.\n");
+            return;
+        }
+
+        int matricula;
+        int encontrado = false;
+        printf("Digite a matricula do professor a ser excluido\n>>");
+        scanf("%d", &matricula);
+        flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
+        for (int i = 0; i < numProfessores; i++)
+        {
+            if (professores[i].matricula == matricula)
+            {
+                encontrado = true;
+                //Move todos os professores após o professor a ser excluído uma posição para trás
+                for (int j = i; j < numProfessores - 1; j++)
+                {
+                    professores[j] = professores[j + 1];
+                }
+                numProfessores--;//Decrementa o número de professores cadastrados
+                printf("Professor com matricula %d excluido com sucesso\n", matricula);
+                break;
+            }
+        }
+        if (!encontrado)
+        {
+            printf("Erro---Professor com matricula %d nao encontrado\n", matricula);
+        }
+    }
 }
 //
 //Função para cadastrar o nome
@@ -599,7 +1305,6 @@ void cadastrarNome(pessoa *entrada)
     }
 
     strcpy(entrada->nome, nome);//Copia o nome validado para a estrutura
-    printf("O nome %s foi cadastrado com sucesso\n", entrada->nome);//Teste para ver se o nome foi cadastrado corretamente
 }
 //
 //Função para validar o nome
@@ -659,7 +1364,6 @@ void cadastrarSexo(pessoa *entrada)
         }
     }
     entrada->sexo = sexo;
-    printf("O sexo %c foi cadastrado com sucesso\n", entrada->sexo);//Teste para ver se o sexo foi cadastrado corretamente
 }
 //
 //Função para cadastrar CPF
@@ -680,7 +1384,7 @@ void cadastrarCPF(pessoa *entrada)
         fgets(cpf, 15, stdin);
         fflush(stdin);
         cpf[strcspn(cpf, "\n")] = '\0';//Remove o '\n' do final da string, se houver
-        retorno = validarCPF(&cpf);//Chama a função para validar o CPF retornando true ou false
+        retorno = validarCPF(cpf);//Chama a função para validar o CPF retornando true ou false
 
         if (retorno)
         {
@@ -728,7 +1432,6 @@ void cadastrarCPF(pessoa *entrada)
     //Formata o CPF para o padrão xxx.xxx.xxx-xx se não estiver nesse formato
     
     strcpy(entrada->cpf, cpf);//Copia o CPF validado para a estrutura
-    printf("O CPF %s foi cadastrado com sucesso\n", entrada->cpf);//Teste para ver se o CPF foi cadastrado corretamente
 }
 //
 //Função para validar CPF
@@ -900,8 +1603,6 @@ void cadastrarData(pessoa *entrada)
     entrada->dataNasc.mes = mes;
     entrada->dataNasc.ano = ano;
     entrada->idade = idade;
-
-    printf("Data de nascimento %02d/%02d/%04d e idade %d cadastrada com sucesso\n", entrada->dataNasc.dia, entrada->dataNasc.mes, entrada->dataNasc.ano, entrada->idade);//Teste para ver se a data foi cadastrada corretamente
 }
 //
 //Função para cadastrar matrícula
@@ -910,6 +1611,23 @@ void cadastraMatricula(pessoa *entrada)
 {
     matriculaGlobal++;//Incrementa a variável global para gerar uma nova matrícula
     entrada->matricula = matriculaGlobal;//Define a matrícula como a variável global
+}
+//
+//Função para deiar a primeira letra de cada palavra em maiúscula
+//
+void strfirstupper(char str[])
+{
+    int i = 0;
+    while (str[i] != '\0')
+    {
+        str[i] = tolower(str[i]);//Converte todo o nome para minúsculo
+
+        if (i == 0 || str[i - 1] == ' ')
+        {
+            str[i] = toupper(str[i]);
+        }
+        i++;
+    }
 }
 //
 //Função para limpar o buffer do teclado
