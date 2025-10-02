@@ -70,6 +70,9 @@ int menuPrincipal();//Função do menu principal
 int menuAluno();//Função do menu aluno
 int menuProfessor();//Função do menu professor
 int menuDisciplina();//Função do menu disciplina
+void cadastrarDisciplina();//Função para cadastrar disciplina
+void listarDisciplinas();//Função para listar disciplinas
+void alterarAlunoDisciplina();//Função para alterar aluno em disciplina
 int menuRelatorios();//Função do menu relatorios
 int cadastrarAluno(pessoa *aluno);//Função para cadastrar aluno
 void listarAlunos();//Função para listar alunos
@@ -85,6 +88,8 @@ void listarAniversariantesDoMes();//Função para listar aniversariantes do mês
 void alterarPessoa(pessoa *entrada);//Função para alterar aluno
 void excluirPessoa(pessoa *entrada);//Função para excluir aluno
 void cadastrarNome(pessoa *entrada);//Função para cadastrar o nome
+void nomeDisciplina(disciplina *entrada);//Função para cadastrar o nome da disciplina
+void codigoDisciplina(disciplina *entrada);//Função para cadastrar o código da disciplina
 int validarNome(char nome[]);//Função para validar o nome
 void cadastrarSexo(pessoa *entrada);//Função para cadastrar o sexo
 void cadastrarCPF(pessoa *entrada);//Função para cadastrar o CPF
@@ -221,13 +226,55 @@ int menuProfessor()
 }
 int menuDisciplina()
 {
-    printf("Menu Disciplina\n");
-    //
-    //Implementar menu disciplina
-    //
+    int escolhaDisciplina;
+    int voltar = false;
+    while (!voltar)
+    {
+        printf("MENU DISCIPLINA:\n1- Cadastrar\n2- Listar\n3- Alterar aluno \n4- Excluir\n5- Voltar\n>>");
+        scanf("%d", &escolhaDisciplina);
+        flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
+
+
+     if (escolhaDisciplina >= 1 && escolhaDisciplina <= 5)
+        {
+            switch (escolhaDisciplina)
+            {
+                disciplina novaDisciplina;
+                case 1:
+                {
+                    cadastrarDisciplina(&novaDisciplina);
+                    break;
+                }
+
+                case 2:
+                {
+                    listarDisciplinas();
+                    break;
+                }
+
+                case 3:
+                {
+                    alterarAlunoDisciplina();
+                    break;
+                }
+                case 4:
+                {
+                    printf("Funcao nao implementada ainda\n");
+                }
+                case 5:
+                {
+                    printf("Voltando...\n");
+                    voltar = true;
+                    break;
+                }
+            }
+        }
+    }
     return 0;
 }
-
+//
+//Menu relatórios
+//
 int menuRelatorios()
 {
     int escolhaRelatorios;
@@ -719,6 +766,187 @@ void listarAniversariantesDoMes()
     return;
 }
 //
+//Função para cadastrar disciplina
+//
+void cadastrarDisciplina(disciplina *novaDisciplina)
+{
+    if(numDisciplinas >= 20) {
+        printf("Erro---Número máximo de disciplinas atingido.\n");
+        return false;
+    }
+
+    nomeDisciplina(novaDisciplina);
+    codigoDisciplina(novaDisciplina);
+    printf("Digite o semestre da disciplina:\n>>");
+    scanf("%d", &novaDisciplina->semestre);
+    flush_in();
+    // Incrementa o contador global
+    disciplinas[numDisciplinas] = *novaDisciplina;
+    numDisciplinas++;
+    printf("Disciplina cadastrada com sucesso!\n");
+    return;
+}
+//
+//Função para listar disciplinas
+//
+void listarDisciplinas(){
+
+    if (numDisciplinas == 0)
+    {
+        printf("Nenhuma disciplina cadastrada.\n");
+        return;
+    }
+
+    int escolhaListar;
+    char digitarCodigo[10];
+    int voltar = false;
+
+    while (!voltar)
+    {
+        printf("Listar Disciplinas:\n1- Listar todas as disciplinas \n2- Listar uma disciplina\n3- Voltar\n>>");
+        scanf("%d", &escolhaListar);
+        flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
+
+        switch(escolhaListar){
+            case 1:
+            {
+                for(int i = 0; i < numDisciplinas; i++){
+
+                    printf("Disciplina %d:\n", i+1);
+                    printf("Nome: %s\n", disciplinas[i].nome);
+                    printf("Codigo: %s\n", disciplinas[i].codigo);
+                    printf("Semestre: %d\n", disciplinas[i].semestre);
+                    printf("\n");
+                }
+                break;
+            }
+            case 2:
+            {
+                printf("Digite o codigo da disciplina: \n");
+                fgets(digitarCodigo, 10, stdin);
+            
+                digitarCodigo[strcspn(digitarCodigo, "\n")] = '\0'; // remove \n
+
+                    int encontrado = false;
+                    for(int i = 0; i < numDisciplinas; i++) {
+                        if(strcmp(digitarCodigo, disciplinas[i].codigo) == 0) { // strcmp retorna 0 se iguais
+                            printf("Disciplina encontrada:\n");
+                            printf("Nome: %s\n", disciplinas[i].nome);
+                            printf("Codigo: %s\n", disciplinas[i].codigo);
+                            printf("Semestre: %d\n", disciplinas[i].semestre);
+                            encontrado = 1;
+                        }
+                    }
+                    if (!encontrado) {
+                        printf("Disciplina nao encontrada.\n");
+                    }
+                    break;
+            }
+            case 3:
+            {
+                printf("Voltando...\n");
+                voltar = true;
+                break;
+            }
+            default:
+            {
+                printf("Opcao invalida.\n");
+                break;
+            }
+        }
+    }
+    return;
+}
+//
+//Função para alterar aluno em disciplina
+//
+void alterarAlunoDisciplina() {
+    char digitarCodigo[10];
+    int encontradoDisciplina = 0;
+
+    printf("Digite o codigo da disciplina:\n>>");
+    fgets(digitarCodigo, 10, stdin);
+    digitarCodigo[strcspn(digitarCodigo, "\n")] = '\0';
+
+    for(int i = 0; i < numDisciplinas; i++) {
+        if(strcmp(digitarCodigo, disciplinas[i].codigo) == 0) { // disciplina encontrada
+            encontradoDisciplina = 1;
+            printf("Disciplina encontrada:\n");
+            printf("Nome: %s\n", disciplinas[i].nome);
+            printf("Codigo: %s\n", disciplinas[i].codigo);
+            printf("Semestre: %d\n", disciplinas[i].semestre);
+
+            int opcao;
+            printf("O que deseja fazer?\n1- Adicionar aluno\n2- Remover aluno\n3- Voltar\n>>");
+            scanf("%d", &opcao);
+            flush_in();
+
+            if(opcao == 1) { // adicionar aluno
+                if(disciplinas[i].numAlunos >= 50){
+                    printf("Erro---Disciplina cheia!\n");
+                    return;
+                }
+
+                int matricula;
+                printf("Digite a matrícula do aluno a adicionar:\n>>");
+                scanf("%d", &matricula);
+                flush_in();
+
+                int encontradoAluno = 0;
+                for(int j = 0; j < numAlunos; j++){
+                    if(alunos[j].matricula == matricula){
+                        disciplinas[i].alunos[disciplinas[i].numAlunos] = alunos[j];
+                        disciplinas[i].numAlunos++;
+                        printf("Aluno %s adicionado à disciplina %s!\n", alunos[j].nome, disciplinas[i].nome);
+                        encontradoAluno = 1;
+                        break;
+                    }
+                }
+                if(!encontradoAluno){
+                    printf("Aluno com matricula %d nao encontrado.\n", matricula);
+                }
+            }
+            else if(opcao == 2){ // remover aluno
+                int matricula;
+                printf("Digite a matricula do aluno a remover:\n>>");
+                scanf("%d", &matricula);
+                flush_in();
+
+                int encontradoAluno = 0;
+                for(int j = 0; j < disciplinas[i].numAlunos; j++){
+                    if(disciplinas[i].alunos[j].matricula == matricula){
+                        // move todos os alunos posteriores uma posição para trás
+                        for(int k = j; k < disciplinas[i].numAlunos - 1; k++){
+                            disciplinas[i].alunos[k] = disciplinas[i].alunos[k+1];
+                        }
+                        disciplinas[i].numAlunos--;
+                        printf("Aluno removido com sucesso!\n");
+                        encontradoAluno = 1;
+                        break;
+                    }
+                }
+                if(!encontradoAluno){
+                    printf("Aluno com matricula %d não esta nessa disciplina.\n", matricula);
+                }
+            }
+            else if(opcao == 3){
+                printf("Voltando...\n");
+                return;
+            }
+            else{
+                printf("Opção invalida.\n");
+            }   
+            break; // sai do loop das disciplinas, já encontramos
+        }
+    }
+
+    if(!encontradoDisciplina){
+        printf("Disciplina não encontrada.\n");
+    }
+
+    return;
+}
+//
 //Função para buscar Pessoas
 //
 int buscarPessoas()
@@ -1060,6 +1288,76 @@ void cadastrarNome(pessoa *entrada)
     strcpy(entrada->nome, nome);//Copia o nome validado para a estrutura
 }
 //
+//Função para cadastrar nome na disciplina
+//
+void nomeDisciplina(disciplina *entrada)
+{
+    int valido = false;
+    char nomeDisciplina[50];
+
+    while(!valido)
+    {
+        printf("Digite o nome da disciplina\n>>");
+        fgets(nomeDisciplina, 50, stdin);
+        nomeDisciplina[strcspn(nomeDisciplina, "\n")] = '\0';//Remove o '\n' do final da string, se houver
+        valido = validarNome(nomeDisciplina);
+
+        for (int j = 0; j < numDisciplinas; j++)
+        {
+            if (strcmp(nomeDisciplina, disciplinas[j].nome) == 0)
+            {
+                printf("Erro---Nome ja cadastrado\n");
+                valido = false;
+            }
+        }
+    }
+    if (valido)
+        {
+            //Transformar a primeira letra de cada palavra em maiúscula
+            int i = 0;
+            
+            while (nomeDisciplina[i] != '\0')
+            {
+                nomeDisciplina[i] = tolower(nomeDisciplina[i]);//Converte todo o nome para minúsculo
+
+                if (i == 0 || nomeDisciplina[i - 1] == ' ')
+                {
+                    nomeDisciplina[i] = toupper(nomeDisciplina[i]);
+                }
+                i++;
+            }
+        }
+    strcpy(entrada->nome, nomeDisciplina);//Copia o nome validado para a estrutura
+}
+//
+//Função para cadastrar código da disciplina
+//
+void codigoDisciplina(disciplina *entrada)
+{
+    int valido = false;
+    char codigoDisciplina[10];
+
+    while(!valido)
+    {
+        printf("Digite o codigo da disciplina (maximo 6 caracteres)\n>>");
+        fgets(codigoDisciplina, 10, stdin);
+        codigoDisciplina[strcspn(codigoDisciplina, "\n")] = '\0';//Remove o '\n' do final da string, se houver
+
+        valido = verficarCodigoDisciplina(codigoDisciplina);
+    }
+
+    if (valido)
+    {
+        for (int i = 0; codigoDisciplina[i] != '\0'; i++)
+        {
+            codigoDisciplina[i] = toupper(codigoDisciplina[i]); // Converte para maiúsculo
+        }
+
+        strcpy(entrada->codigo, codigoDisciplina);//Copia o codigo validado para a estrutura
+    }
+    return;
+}
+//
 //Função para validar o nome
 //
 int validarNome(char nome[])
@@ -1077,7 +1375,7 @@ int validarNome(char nome[])
             return false;
         } 
     }
-    if (strlen(nome) > 40)
+    if (strlen(nome) > 50)
     {
         printf("Erro---Nome muito grande\n");
         return false;
@@ -1085,6 +1383,49 @@ int validarNome(char nome[])
     else if (strlen(nome) < 4)
     {
         printf("Erro---Nome muito pequeno\n");
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+//
+//Função para verificar o código da disciplina
+//
+int verficarCodigoDisciplina(char codigo[])
+{
+    int i = 0;
+    while (codigo[i] != '\0')
+    {
+        if (codigo[i] >= 'a' && codigo[i] <= 'z' || codigo[i] >= 'A' && codigo[i] <= 'Z' || codigo[i] >= '0' && codigo[i] <= '9')
+        {
+            i++;
+        }
+        else
+        {
+            printf("Erro---Codigo invalido, nao adicone acentos ou caracteres especiais\n");
+            return false;
+        } 
+    }
+
+    for (int j = 0; j < numDisciplinas; j++)
+    {
+        if (strcmp(codigo, disciplinas[j].codigo) == 0)
+        {
+            printf("Erro---Codigo ja cadastrado\n");
+            return false;
+        }
+    }
+
+    if (strlen(codigo) > 6)
+    {
+        printf("Erro---Codigo muito grande\n");
+        return false;
+    }
+    else if (strlen(codigo) < 3)
+    {
+        printf("Erro---Codigo muito pequeno\n");
         return false;
     }
     else
