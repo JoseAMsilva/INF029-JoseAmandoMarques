@@ -49,4 +49,5 @@ int main()
     }
     printf("Fim do programa\n");
     system("pause");
+    return 0; 
 }
