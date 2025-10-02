@@ -568,7 +568,13 @@ void listarProfessoresPorSexo()
     }
     if (!encontrado)
     {
-        printf("Nenhum professor cadastrado com o sexo %c.\n", sexo);
+        if (sexo == 'M') {
+            printf("Nenhum professor cadastrado com o sexo Masculino.\n");
+        } else if (sexo == 'F') {
+            printf("Nenhuma professora cadastrada com o sexo Feminino.\n");
+        } else {
+            printf("Nenhum professor cadastrado com o sexo Outro.\n");
+        }
     }
     return;
 }
@@ -1052,7 +1058,6 @@ void cadastrarNome(pessoa *entrada)
     }
 
     strcpy(entrada->nome, nome);//Copia o nome validado para a estrutura
-    printf("O nome %s foi cadastrado com sucesso\n", entrada->nome);//Teste para ver se o nome foi cadastrado corretamente
 }
 //
 //Função para validar o nome
@@ -1112,7 +1117,6 @@ void cadastrarSexo(pessoa *entrada)
         }
     }
     entrada->sexo = sexo;
-    printf("O sexo %c foi cadastrado com sucesso\n", entrada->sexo);//Teste para ver se o sexo foi cadastrado corretamente
 }
 //
 //Função para cadastrar CPF
@@ -1181,7 +1185,6 @@ void cadastrarCPF(pessoa *entrada)
     //Formata o CPF para o padrão xxx.xxx.xxx-xx se não estiver nesse formato
     
     strcpy(entrada->cpf, cpf);//Copia o CPF validado para a estrutura
-    printf("O CPF %s foi cadastrado com sucesso\n", entrada->cpf);//Teste para ver se o CPF foi cadastrado corretamente
 }
 //
 //Função para validar CPF
@@ -1353,8 +1356,6 @@ void cadastrarData(pessoa *entrada)
     entrada->dataNasc.mes = mes;
     entrada->dataNasc.ano = ano;
     entrada->idade = idade;
-
-    printf("Data de nascimento %02d/%02d/%04d e idade %d cadastrada com sucesso\n", entrada->dataNasc.dia, entrada->dataNasc.mes, entrada->dataNasc.ano, entrada->idade);//Teste para ver se a data foi cadastrada corretamente
 }
 //
 //Função para cadastrar matrícula
