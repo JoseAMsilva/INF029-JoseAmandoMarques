@@ -822,7 +822,7 @@ void listarDisciplinas(){
             }
             case 2:
             {
-                printf("Digite o codigo da disciplina: \n");
+                printf("Digite o código da disciplina: \n");
                 fgets(digitarCodigo, 10, stdin);
             
                 digitarCodigo[strcspn(digitarCodigo, "\n")] = '\0'; // remove \n
@@ -832,13 +832,13 @@ void listarDisciplinas(){
                         if(strcmp(digitarCodigo, disciplinas[i].codigo) == 0) { // strcmp retorna 0 se iguais
                             printf("Disciplina encontrada:\n");
                             printf("Nome: %s\n", disciplinas[i].nome);
-                            printf("Codigo: %s\n", disciplinas[i].codigo);
+                            printf("Código: %s\n", disciplinas[i].codigo);
                             printf("Semestre: %d\n", disciplinas[i].semestre);
                             encontrado = 1;
                         }
                     }
                     if (!encontrado) {
-                        printf("Disciplina nao encontrada.\n");
+                        printf("Disciplina no encontrada.\n");
                     }
                     break;
             }
@@ -888,7 +888,7 @@ void alterarAlunoDisciplina() {
                 }
 
                 int matricula;
-                printf("Digite a matrícula do aluno a adicionar:\n>>");
+                printf("Digite a matricula do aluno a adicionar:\n>>");
                 scanf("%d", &matricula);
                 flush_in();
 
@@ -897,7 +897,7 @@ void alterarAlunoDisciplina() {
                     if(alunos[j].matricula == matricula){
                         disciplinas[i].alunos[disciplinas[i].numAlunos] = alunos[j];
                         disciplinas[i].numAlunos++;
-                        printf("Aluno %s adicionado à disciplina %s!\n", alunos[j].nome, disciplinas[i].nome);
+                        printf("Aluno %s adicionado a disciplina %s!\n", alunos[j].nome, disciplinas[i].nome);
                         encontradoAluno = 1;
                         break;
                     }
@@ -926,7 +926,7 @@ void alterarAlunoDisciplina() {
                     }
                 }
                 if(!encontradoAluno){
-                    printf("Aluno com matricula %d não esta nessa disciplina.\n", matricula);
+                    printf("Aluno com matricula %d nao esta nessa disciplina.\n", matricula);
                 }
             }
             else if(opcao == 3){
@@ -934,14 +934,14 @@ void alterarAlunoDisciplina() {
                 return;
             }
             else{
-                printf("Opção invalida.\n");
+                printf("Opçao invalida.\n");
             }   
             break; // sai do loop das disciplinas, já encontramos
         }
     }
 
     if(!encontradoDisciplina){
-        printf("Disciplina não encontrada.\n");
+        printf("Disciplina nao encontrada.\n");
     }
 
     return;
