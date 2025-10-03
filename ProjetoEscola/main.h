@@ -1882,23 +1882,6 @@ void cadastraMatricula(pessoa *entrada)
     entrada->matricula = matriculaGlobal;//Define a matrícula como a variável global
 }
 //
-//Função para deiar a primeira letra de cada palavra em maiúscula
-//
-void strfirstupper(char str[])
-{
-    int i = 0;
-    while (str[i] != '\0')
-    {
-        str[i] = tolower(str[i]);//Converte todo o nome para minúsculo
-
-        if (i == 0 || str[i - 1] == ' ')
-        {
-            str[i] = toupper(str[i]);
-        }
-        i++;
-    }
-}
-//
 //Função para limpar o buffer do teclado
 //
 void flush_in() {
