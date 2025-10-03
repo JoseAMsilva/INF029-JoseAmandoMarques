@@ -28,7 +28,6 @@ typedef struct Pessoa
     int idade;
     char cpf[15];
     char funcao;//A- Aluno, P- Professor
-    char situacao; //A- Ativo, I- Inativo
     struct data
     {
         int dia;
@@ -46,7 +45,7 @@ typedef struct Disciplina
     char nome[20];
     char codigo[10];
     int semestre;
-    int numAlunos;//Número de alunos matriculados na disciplina
+    int numAlunosDisciplina;//Número de alunos matriculados na disciplina
     pessoa professor;
     pessoa alunos[50];//Vetor para armazenar até 50 alunos
     
@@ -73,6 +72,8 @@ int menuDisciplina();//Função do menu disciplina
 void cadastrarDisciplina();//Função para cadastrar disciplina
 void listarDisciplinas();//Função para listar disciplinas
 void alterarAlunoDisciplina();//Função para alterar aluno em disciplina
+void alterarProfessorDisciplina();//Função para alterar professor em disciplina
+void excluirDisciplina();//Função para excluir disciplina
 int menuRelatorios();//Função do menu relatorios
 int cadastrarAluno(pessoa *aluno);//Função para cadastrar aluno
 void listarAlunos();//Função para listar alunos
@@ -90,6 +91,7 @@ void excluirPessoa(pessoa *entrada);//Função para excluir aluno
 void cadastrarNome(pessoa *entrada);//Função para cadastrar o nome
 void nomeDisciplina(disciplina *entrada);//Função para cadastrar o nome da disciplina
 void codigoDisciplina(disciplina *entrada);//Função para cadastrar o código da disciplina
+void professorDisciplina(disciplina *entrada);//Função para cadastrar o professor da disciplina
 int validarNome(char nome[]);//Função para validar o nome
 void cadastrarSexo(pessoa *entrada);//Função para cadastrar o sexo
 void cadastrarCPF(pessoa *entrada);//Função para cadastrar o CPF
@@ -167,6 +169,10 @@ int menuAluno()
                 }
             }
         }
+        else
+        {
+            printf("Opcao invalida.\n");
+        }
     }
     return 0;
 }
@@ -220,6 +226,10 @@ int menuProfessor()
                 }
             }
         }
+        else
+        {
+            printf("Opcao invalida.\n");
+        }
     }
     return 0;
    
@@ -230,12 +240,12 @@ int menuDisciplina()
     int voltar = false;
     while (!voltar)
     {
-        printf("MENU DISCIPLINA:\n1- Cadastrar\n2- Listar\n3- Alterar aluno \n4- Excluir\n5- Voltar\n>>");
+        printf("MENU DISCIPLINA:\n1- Cadastrar\n2- Listar\n3- Alterar aluno \n4- Alterar Professor\n5- Excluir\n6- Voltar\n>>");
         scanf("%d", &escolhaDisciplina);
         flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
 
 
-     if (escolhaDisciplina >= 1 && escolhaDisciplina <= 5)
+        if (escolhaDisciplina >= 1 && escolhaDisciplina <= 6)
         {
             switch (escolhaDisciplina)
             {
@@ -259,15 +269,25 @@ int menuDisciplina()
                 }
                 case 4:
                 {
-                    printf("Funcao nao implementada ainda\n");
+                    alterarProfessorDisciplina();
+                    break;
                 }
                 case 5:
+                {
+                    excluirDisciplina();
+                    break;
+                }
+                case 6:
                 {
                     printf("Voltando...\n");
                     voltar = true;
                     break;
                 }
             }
+        }
+        else
+        {
+            printf("Opcao invalida.\n");
         }
     }
     return 0;
@@ -381,7 +401,6 @@ int cadastrarAluno(pessoa *novoAluno)
     cadastrarCPF(novoAluno);
     cadastrarData(novoAluno);
     cadastraMatricula(novoAluno);
-    novoAluno->situacao = 'A';//Define a situação como ativa
     alunos[numAlunos] = *novoAluno;//Adiciona o novo aluno ao vetor de alunos
 
     numAlunos++;//Incrementa o número de alunos cadastrados
@@ -552,7 +571,6 @@ int cadastrarProfessor(pessoa *novoProfessor)
     cadastrarCPF(novoProfessor);
     cadastrarData(novoProfessor);
     cadastraMatricula(novoProfessor);
-    novoProfessor->situacao = 'A';//Define a situação como ativa
     professores[numProfessores] = *novoProfessor;//Adiciona o novo professor ao vetor de professores
     numProfessores++;//Incrementa o número de professores cadastrados
     return true;
@@ -780,8 +798,11 @@ void cadastrarDisciplina(disciplina *novaDisciplina)
     printf("Digite o semestre da disciplina:\n>>");
     scanf("%d", &novaDisciplina->semestre);
     flush_in();
+    professorDisciplina(novaDisciplina);
+    novaDisciplina->numAlunosDisciplina = 0;
     // Incrementa o contador global
     disciplinas[numDisciplinas] = *novaDisciplina;
+
     numDisciplinas++;
     printf("Disciplina cadastrada com sucesso!\n");
     return;
@@ -816,13 +837,19 @@ void listarDisciplinas(){
                     printf("Nome: %s\n", disciplinas[i].nome);
                     printf("Codigo: %s\n", disciplinas[i].codigo);
                     printf("Semestre: %d\n", disciplinas[i].semestre);
+                    printf("Professor: %s\n", disciplinas[i].professor.nome);
+                    if (disciplinas[i].numAlunosDisciplina == 0) {
+                        printf("Nenhum aluno matriculado.\n");
+                    } else {
+                        printf("Numero de alunos matriculados: %d\n", disciplinas[i].numAlunosDisciplina);
+                    }
                     printf("\n");
                 }
                 break;
             }
             case 2:
             {
-                printf("Digite o código da disciplina: \n");
+                printf("Digite o codigo da disciplina: \n");
                 fgets(digitarCodigo, 10, stdin);
             
                 digitarCodigo[strcspn(digitarCodigo, "\n")] = '\0'; // remove \n
@@ -834,6 +861,21 @@ void listarDisciplinas(){
                             printf("Nome: %s\n", disciplinas[i].nome);
                             printf("Codigo: %s\n", disciplinas[i].codigo);
                             printf("Semestre: %d\n", disciplinas[i].semestre);
+                            printf("Professor: %s\n", disciplinas[i].professor.nome);
+                            if (disciplinas[i].numAlunosDisciplina == 0) {
+                                printf("Nenhum aluno matriculado nesta disciplina.\n");
+                                return;
+                            }
+                            else{
+                                printf("Alunos matriculados:\n");
+                                for (int j = 0; j < disciplinas[i].numAlunosDisciplina; j++)
+                                {
+                                    printf("Aluno %d:\n", j+1);
+                                    printf("Matricula: %d\n", disciplinas[i].alunos[j].matricula);
+                                    printf("Nome: %s\n", disciplinas[i].alunos[j].nome);
+                                }
+                                printf("\n");
+                            }
                             encontrado = 1;
                         }
                     }
@@ -861,6 +903,11 @@ void listarDisciplinas(){
 //Função para alterar aluno em disciplina
 //
 void alterarAlunoDisciplina() {
+    if (numDisciplinas == 0) {
+        printf("Nenhuma disciplina cadastrada.\n");
+        return;
+    }
+
     char digitarCodigo[10];
     int encontradoDisciplina = 0;
 
@@ -882,7 +929,12 @@ void alterarAlunoDisciplina() {
             flush_in();
 
             if(opcao == 1) { // adicionar aluno
-                if(disciplinas[i].numAlunos >= 50){
+                if (numAlunos == 0) {
+                    printf("Nenhum aluno cadastrado.\n");
+                    return;
+                }
+
+                if(disciplinas[i].numAlunosDisciplina >= 50){
                     printf("Erro---Disciplina cheia!\n");
                     return;
                 }
@@ -895,8 +947,8 @@ void alterarAlunoDisciplina() {
                 int encontradoAluno = 0;
                 for(int j = 0; j < numAlunos; j++){
                     if(alunos[j].matricula == matricula){
-                        disciplinas[i].alunos[disciplinas[i].numAlunos] = alunos[j];
-                        disciplinas[i].numAlunos++;
+                        disciplinas[i].alunos[disciplinas[i].numAlunosDisciplina] = alunos[j];
+                        disciplinas[i].numAlunosDisciplina += 1;
                         printf("Aluno %s adicionado a disciplina %s!\n", alunos[j].nome, disciplinas[i].nome);
                         encontradoAluno = 1;
                         break;
@@ -906,20 +958,25 @@ void alterarAlunoDisciplina() {
                     printf("Aluno com matricula %d nao encontrado.\n", matricula);
                 }
             }
-            else if(opcao == 2){ // remover aluno
+            else if(opcao == 2){ // remover aluno  
+                if (disciplinas[i].numAlunosDisciplina == 0) {
+                    printf("Nenhum aluno matriculado nesta disciplina.\n");
+                    return;
+                }
+
                 int matricula;
                 printf("Digite a matricula do aluno a remover:\n>>");
                 scanf("%d", &matricula);
                 flush_in();
 
                 int encontradoAluno = 0;
-                for(int j = 0; j < disciplinas[i].numAlunos; j++){
+                for(int j = 0; j < disciplinas[i].numAlunosDisciplina; j++){
                     if(disciplinas[i].alunos[j].matricula == matricula){
                         // move todos os alunos posteriores uma posição para trás
-                        for(int k = j; k < disciplinas[i].numAlunos - 1; k++){
+                        for(int k = j; k < disciplinas[i].numAlunosDisciplina - 1; k++){
                             disciplinas[i].alunos[k] = disciplinas[i].alunos[k+1];
                         }
-                        disciplinas[i].numAlunos--;
+                        disciplinas[i].numAlunosDisciplina -= 1;
                         printf("Aluno removido com sucesso!\n");
                         encontradoAluno = 1;
                         break;
@@ -944,6 +1001,88 @@ void alterarAlunoDisciplina() {
         printf("Disciplina nao encontrada.\n");
     }
 
+    return;
+}
+//
+//Função para alterar professor em disciplina
+//
+void alterarProfessorDisciplina() {
+     if (numProfessores == 0) {
+        printf("Nenhum professor cadastrado.\n");
+        return;
+    }
+
+     if (numDisciplinas == 0) {
+        printf("Nenhuma disciplina cadastrada.\n");
+        return;
+    }
+
+    char digitarCodigo[10];
+    int encontradoDisciplina = false;
+
+    printf("Digite o codigo da disciplina:\n>>");
+    fgets(digitarCodigo, 10, stdin);
+    digitarCodigo[strcspn(digitarCodigo, "\n")] = '\0';
+    for(int i = 0; i < numDisciplinas; i++) {
+        if(strcmp(digitarCodigo, disciplinas[i].codigo) == 0) { // disciplina encontrada
+            encontradoDisciplina = true;
+
+            int matricula;
+            printf("Digite a matricula do novo professor:\n>>");
+            scanf("%d", &matricula);
+            flush_in();
+
+            int encontradoProfessor = false;
+            for(int j = 0; j < numProfessores; j++){
+                if(professores[j].matricula == matricula){
+                    disciplinas[i].professor = professores[j];
+                    printf("Professor da disciplina %s alterado para %s!\n", disciplinas[i].nome, professores[j].nome);
+                    encontradoProfessor = 1;
+                    break;
+                }
+            }
+            if(!encontradoProfessor){
+                printf("Professor com matricula %d nao encontrado.\n", matricula);
+            }
+            break; // sai do loop das disciplinas, já encontramos
+        }
+    }
+    if(!encontradoDisciplina){
+        printf("Disciplina nao encontrada.\n");
+    }
+    return;
+}
+//
+//Função para excluir disciplina
+//
+void excluirDisciplina()
+{
+    if (numDisciplinas == 0) {
+        printf("Nenhuma disciplina cadastrada.\n");
+        return;
+    }
+
+    char digitarCodigo[10];
+    int encontradoDisciplina = 0;
+    printf("Digite o codigo da disciplina a ser excluida:\n>>");
+    fgets(digitarCodigo, 10, stdin);
+    digitarCodigo[strcspn(digitarCodigo, "\n")] = '\0';
+
+    for(int i = 0; i < numDisciplinas; i++) {
+        if(strcmp(digitarCodigo, disciplinas[i].codigo) == 0) { // disciplina encontrada
+            encontradoDisciplina = 1;
+            // move todas as disciplinas posteriores uma posição para trás
+            for(int j = i; j < numDisciplinas - 1; j++){
+                disciplinas[j] = disciplinas[j+1];
+            }
+            numDisciplinas -= 1;
+            printf("Disciplina excluida com sucesso!\n");
+            break; // sai do loop das disciplinas, já encontramos
+        }
+    }
+    if(!encontradoDisciplina){
+        printf("Disciplina nao encontrada.\n");
+    }
     return;
 }
 //
@@ -1356,6 +1495,42 @@ void codigoDisciplina(disciplina *entrada)
         strcpy(entrada->codigo, codigoDisciplina);//Copia o codigo validado para a estrutura
     }
     return;
+}
+//
+//Função para cadastrar professor da disciplina
+//
+void professorDisciplina(disciplina *entrada)
+{
+    if (numProfessores == 0)
+    {
+        printf("Erro---Nenhum professor cadastrado.\n");
+        return;
+    }
+
+    int valido = false;
+    int matricula;
+    int encontrado = false;
+
+    while (!valido)
+    {
+        printf("Digite a matricula do professor\n>>");
+        scanf("%d", &matricula);
+        flush_in();//Limpa o buffer do teclado removendo o '\n' que fica após o scanf
+        for (int i = 0; i < numProfessores; i++)
+        {
+            if (professores[i].matricula == matricula)
+            {
+                entrada->professor = professores[i];
+                valido = true;
+                encontrado = true;
+                break;
+            }
+        }
+        if (!encontrado)
+        {
+            printf("Erro---Professor com matricula %d nao encontrado\n", matricula);
+        }
+    }
 }
 //
 //Função para validar o nome

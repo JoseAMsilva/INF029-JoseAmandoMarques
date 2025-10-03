@@ -16,7 +16,6 @@ int main()
     alunos[0].idade = 24;
     alunos[0].matricula = matriculaGlobal+1;
     alunos[0].funcao = 'A';
-    alunos[0].situacao = 'A';
     numAlunos++;
     matriculaGlobal++;
 
@@ -29,7 +28,6 @@ int main()
     alunos[1].idade = 24;
     alunos[1].matricula = matriculaGlobal+1;
     alunos[1].funcao = 'A';
-    alunos[1].situacao = 'A';
     numAlunos++;
     matriculaGlobal++;
 
@@ -42,7 +40,6 @@ int main()
     professores[0].idade = 34;
     professores[0].matricula = matriculaGlobal+1;
     professores[0].funcao = 'P';
-    professores[0].situacao = 'A';
     numProfessores++;
     matriculaGlobal++;
 
@@ -55,7 +52,6 @@ int main()
     professores[1].idade = 38;
     professores[1].matricula = matriculaGlobal+1;
     professores[1].funcao = 'P';
-    professores[1].situacao = 'A';
     numProfessores++;
     matriculaGlobal++;
 
@@ -68,7 +64,6 @@ int main()
     alunos[2].idade = 23;
     alunos[2].matricula = matriculaGlobal+1;
     alunos[2].funcao = 'A';
-    alunos[2].situacao = 'A';
     numAlunos++;
     matriculaGlobal++;
 
@@ -81,7 +76,6 @@ int main()
     alunos[3].idade = 22;
     alunos[3].matricula = matriculaGlobal+1;
     alunos[3].funcao = 'A';
-    alunos[3].situacao = 'A';
     numAlunos++;
     matriculaGlobal++;
 
@@ -94,7 +88,6 @@ int main()
     professores[2].idade = 48;
     professores[2].matricula = matriculaGlobal+1;
     professores[2].funcao = 'P';
-    professores[2].situacao = 'A';
     numProfessores++;
     matriculaGlobal++;
 
