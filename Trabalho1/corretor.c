@@ -19,12 +19,12 @@ int main(){
     //testQ2(); // 35 testes
     //printf("q3\n");
     //testQ3(); // 13 testes
-    printf("q4\n");
-    testQ4(); // 22 testes
+    //printf("q4\n");
+    //testQ4(); // 22 testes
     //printf("q5\n");
-   // testQ5(); // 10 testes
-    //printf("q6\n");
-    //testQ6(); // 10 testes 
+    //testQ5(); // 10 testes
+    printf("q6\n");
+    testQ6(); // 10 testes 
     //printf("q7\n");
     //testQ7();
     
@@ -265,32 +265,32 @@ void testQ4(){
 }
 
 
-// void testQ5(){
-//     printf("%d\n",q5(345) == 543);
-//     printf("%d\n",q5(78) == 87);
-//     printf("%d\n",q5(3) == 3);
-//     printf("%d\n",q5(5430) == 345);
-//     printf("%d\n",q5(1000) == 1);
-//     printf("%d\n",q5(0) == 0);
-//     printf("%d\n",q5(707) == 707);
-//     printf("%d\n",q5(80) == 8);
-//     printf("%d\n",q5(8) == 8);
-//     printf("%d\n",q5(1234) == 4321);
-// }
+void testQ5(){
+    printf("%d\n",q5(345) == 543);
+    printf("%d\n",q5(78) == 87);
+    printf("%d\n",q5(3) == 3);
+    printf("%d\n",q5(5430) == 345);
+    printf("%d\n",q5(1000) == 1);
+    printf("%d\n",q5(0) == 0);
+    printf("%d\n",q5(707) == 707);
+    printf("%d\n",q5(80) == 8);
+    printf("%d\n",q5(8) == 8);
+    printf("%d\n",q5(1234) == 4321);
+}
 
-// void testQ6(){
-//     printf("%d\n",q6(34567368, 3) == 2);
-//     printf("%d\n",q6(34567368, 4576) == 0);
-//     printf("%d\n",q6(3539343, 3) == 4);
-//     printf("%d\n",q6(3539343, 39) == 1);
-//     printf("%d\n",q6(5444, 44) == 1);
-//     printf("%d\n",q6(54444, 44) == 2);
-//     printf("%d\n",q6(1234562354, 23) == 2);
-//     printf("%d\n",q6(1234, 13) == 0);
-//     printf("%d\n",q6(544444, 4) == 5);
-//     printf("%d\n",q6(1234562354, 32) == 0);
+void testQ6(){
+    printf("%d\n",q6(34567368, 3) == 2);
+    printf("%d\n",q6(34567368, 4576) == 0);
+    printf("%d\n",q6(3539343, 3) == 4);
+    printf("%d\n",q6(3539343, 39) == 1);
+    printf("%d\n",q6(5444, 44) == 1);
+    printf("%d\n",q6(54444, 44) == 2);
+    printf("%d\n",q6(1234562354, 23) == 2);
+    printf("%d\n",q6(1234, 13) == 0);
+    printf("%d\n",q6(544444, 4) == 5);
+    printf("%d\n",q6(1234562354, 32) == 0);
 
-// }
+}
       
         
 

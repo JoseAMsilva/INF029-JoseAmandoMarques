@@ -28,6 +28,8 @@ DataQuebrada quebraData(char data[]);
 int ehbissexto(int ano);
 int diasNoMes(int mes, int ano);
 int datafinalehmaior(DataQuebrada dqInicial, DataQuebrada dqFinal);
+int extrairDigitos(int num, int* entrada);
+
 /*
 ## função utilizada para testes  ##
 
@@ -263,11 +265,19 @@ int q4(char *strTexto, char *strBusca, int posicoes[30])
 //     Número invertido
 //  */
 
-// int q5(int num)
-// {
+int q5(int num)
+{
+    int numInvertido = 0;
+    int resto;
+    while (num != 0){
+        resto = num % 10;
+        numInvertido = numInvertido * 10 + resto;
+        num /= 10;
+    }
+    num = numInvertido;
 
-//     return num;
-// }
+    return num;
+}
 
 // /*
 //  Q6 = ocorrência de um número em outro
@@ -279,11 +289,38 @@ int q4(char *strTexto, char *strBusca, int posicoes[30])
 //     Quantidade de vezes que número de busca ocorre em número base
 //  */
 
-// int q6(int numerobase, int numerobusca)
-// {
-//     int qtdOcorrencias;
-//     return qtdOcorrencias;
-// }
+int q6(int numerobase, int numerobusca)
+{
+    int qtdOcorrencias = 0;
+    int digitosBase[50];
+    int digitosBusca[50];
+    int tamBase = 0;
+    int tamBusca = 0;
+
+    tamBase = extrairDigitos(numerobase, digitosBase);
+    tamBusca = extrairDigitos(numerobusca, digitosBusca);
+
+    if (tamBusca == 0 || tamBusca > tamBase) {
+        return 0;
+    }
+
+    for (int i = 0; i <= tamBase - tamBusca;) {
+        int encontrado = 1;
+        for (int j = 0; j < tamBusca; j++) {
+            if (digitosBase[i + j] != digitosBusca[j]) {
+                encontrado = 0;
+                break;
+            }
+        }
+        if (encontrado) {
+            qtdOcorrencias++;   
+            i = i + tamBusca;
+        } else {
+            i++;
+        }
+    }
+    return qtdOcorrencias;
+}
 
 // /*
 //  Q7 = jogo busca palavras
@@ -435,4 +472,26 @@ int datafinalehmaior(DataQuebrada dqInicial, DataQuebrada dqFinal){
     }else{
         return 0;
     }
+}
+
+int extrairDigitos(int num, int* entrada) {
+    int tempEntrada[50];
+    int count = 0;
+
+    if (num == 0) {
+        entrada[0] = 0;
+        return 1;
+    }
+
+    while (num > 0) {
+        tempEntrada[count] = (int)(num % 10);
+        num = num / 10;
+        count++;
+    }
+
+    for (int i = 0; i < count; i++) {
+        entrada[i] = tempEntrada[count - 1 - i];
+    }
+
+    return count;
 }
