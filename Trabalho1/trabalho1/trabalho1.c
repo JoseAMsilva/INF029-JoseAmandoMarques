@@ -30,6 +30,7 @@ int ehbissexto(int ano);
 int diasNoMes(int mes, int ano);
 int datafinalehmaior(DataQuebrada dqInicial, DataQuebrada dqFinal);
 int extrairDigitos(int num, int* entrada);
+void formatarPalavra(char *palavra);
 
 /*
 ## função utilizada para testes  ##
@@ -200,6 +201,7 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
 //  */
 int q3(char *texto, char c, int isCaseSensitive)
 {
+    formatarPalavra(texto);
     int qtdOcorrencias = 0;
     if (isCaseSensitive == 1){
         for (int i = 0; texto[i] != '\0'; i++){
@@ -233,6 +235,8 @@ int q3(char *texto, char c, int isCaseSensitive)
 //  */
 int q4(char *strTexto, char *strBusca, int posicoes[30])
 {
+    formatarPalavra(strTexto);
+    formatarPalavra(strBusca);
     int qtdOcorrencias = 0;
     for (int i = 0; i < 30; i++){
         posicoes[i] = -1;
@@ -482,4 +486,105 @@ int extrairDigitos(int num, int* entrada) {
     }
 
     return count;
+}
+void formatarPalavra(char *palavra)
+{
+    //a -93 a -96, A -125 a -128, e -86 a -88, E -118 a -120, i -82 a -84, I -114 a -116, o -75 a -78, O -107 a -110, u -69 a -71, U -101 a -103 c -89, C -121
+    char semAcento[100];
+    int codigo[strlen(palavra)];
+    int i, j;
+    for (int i = 0; i < strlen(palavra); i++)
+    {
+        codigo[i] = (int)palavra[i];
+    }
+    
+
+    for (i = 0, j = 0; i < strlen(palavra); i++)
+    {
+        if (codigo[i] == -61)
+        {
+            switch (codigo[i + 1])
+            {
+            case -93:
+            case -94:
+            case -95:
+            case -96:
+                semAcento[j] = 'a';
+                j++;
+                break;
+            case -125:
+            case -126:
+            case -127:
+            case -128:
+                semAcento[j] = 'A';
+                j++;
+                break;
+            case -86:
+            case -87:
+            case -88:
+                semAcento[j] = 'e';
+                j++;
+                break;
+            case -118:
+            case -119:
+            case -120:
+                semAcento[j] = 'E';
+                j++;
+                break;
+            case -82:
+            case -83:
+            case -84:
+                semAcento[j] = 'i';
+                j++;
+                break;
+            case -114:
+            case -115:
+            case -116:
+                semAcento[j] = 'I';
+                j++;
+                break;
+            case -75:
+            case -76:
+            case -77:
+            case -78:
+                semAcento[j] = 'o';
+                j++;
+                break;
+            case -107:
+            case -108:
+            case -109:
+            case -110:
+                semAcento[j] = 'O';
+                j++;
+                break;
+            case -69:
+            case -70:
+            case -71:
+                semAcento[j] = 'u';
+                j++;
+                break;
+            case -101:
+            case -102:
+            case -103:
+                semAcento[j] = 'U';
+                j++;
+                break;
+            case -89:
+                semAcento[j] = 'c';
+                j++;
+                break;
+            case -121:
+                semAcento[j] = 'C';
+                j++;
+                break;
+            }
+        }
+        if (codigo[i] > 0)
+        {
+            semAcento[j] = palavra[i];
+            j++;
+        }
+    }
+    semAcento[j] = '\0';
+    strcpy(palavra, semAcento);
 }
