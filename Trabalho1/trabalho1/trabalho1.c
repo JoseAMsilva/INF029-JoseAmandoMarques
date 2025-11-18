@@ -430,9 +430,20 @@ DataQuebrada quebraData(char data[]){
         }else {
         dq.valido = 0;
     }
-    dq.iDia = atoi(sDia);
-    dq.iMes = atoi(sMes);
-    dq.iAno = atoi(sAno);
+ 
+    dq.iDia = 0;
+    dq.iMes = 0;
+    dq.iAno = 0;
+ 
+    for (i = 0; sDia[i] != '\0'; i++){
+        dq.iDia = dq.iDia *10 + (sDia[i] - '0');
+    }
+    for (i = 0; sMes[i] != '\0'; i++){
+        dq.iMes = dq.iMes *10 + (sMes[i] - '0');
+    }
+    for (i = 0; sAno[i] != '\0'; i++){
+        dq.iAno = dq.iAno *10 + (sAno[i] - '0');
+    }
     return dq;
 }
 
