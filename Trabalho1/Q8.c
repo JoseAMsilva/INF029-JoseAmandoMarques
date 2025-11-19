@@ -90,17 +90,17 @@ void visualizar()
 int main()
 {
     int fim = false;
-    char ordem [9] = {'X', 'O', 'X', 'O', 'X', 'O', 'X', 'O', 'X'};
+    int jogadaAtual;
     int linha, coluna;
-    int i;
+    char ordem [9] = {'X', 'O', 'X', 'O', 'X', 'O', 'X', 'O', 'X'};
     char jogada[3];
     char jogador;
 
     while (!fim)
     {
-        for (i = 0; i < 9; i++)
+        for (jogadaAtual = 0; jogadaAtual < 9; jogadaAtual++)
         {
-            jogador = ordem[i];
+            jogador = ordem[jogadaAtual];
             visualizar();
             printf("jogador '%c' Digite a posicao da jogada\n", jogador);
             fgets(jogada, 3, stdin);
@@ -115,7 +115,7 @@ int main()
             else
             {
                 printf("Jogada invalida jogue novamente!\n");
-                i--;
+                jogadaAtual--;
             }
             if (ganhou(jogador))
             {
