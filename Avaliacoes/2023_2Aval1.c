@@ -171,7 +171,7 @@ int main(void){
         }
     }
     else if (escolha == -1){
-        printf("Saindo do programa...\n");
+        printf("Saindo do programa..\n");
     }
     
     return 0;
